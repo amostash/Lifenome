@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YHealth — America's Community Health Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1a2744;--teal:#00b4a0;--tl:#00d4bc;--cyan:#29b5d8;--mag:#c62a8a;--bg:#f0f4f8;--w:#fff;--gr:#8596a8;--lg:#dde4ec;--amber:#92400e;--amberL:#f59e0b}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--navy);min-height:100vh}
+#nav{background:#fff;border-bottom:1px solid var(--lg);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(26,39,68,.06)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 1.2rem;display:flex;align-items:center;gap:.8rem}
+.logo{display:flex;align-items:center;gap:.5rem;padding:.7rem 0;flex-shrink:0}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--teal),var(--cyan));border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.9rem}
+.logo-text{font-family:'Playfair Display',serif;font-weight:900;color:var(--navy);font-size:1rem}
+.logo-text span{color:var(--teal)}
+.nav-tabs{display:flex;gap:.15rem;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-btn{padding:.45rem .75rem;border-radius:7px;border:none;cursor:pointer;white-space:nowrap;background:transparent;color:var(--gr);font-weight:600;font-size:.76rem;font-family:inherit;transition:all .15s}
+.nav-btn.active{background:var(--navy);color:#fff}
+.nav-btn:hover:not(.active){background:var(--lg)}
+.page{max-width:1200px;margin:0 auto;padding:1.8rem 1.2rem;display:none}
+.page.active{display:block}
+#bnav{background:#fff;border-top:1px solid var(--lg);padding:.85rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;bottom:0;z-index:50}
+.dots{display:flex;gap:.35rem}
+.dot{width:7px;height:7px;border-radius:3.5px;background:var(--lg);cursor:pointer;transition:all .2s}
+.dot.active{width:18px;background:var(--teal)}
+.btn{padding:.45rem 1.1rem;border-radius:7px;border:none;font-weight:600;font-size:.82rem;font-family:inherit;cursor:pointer;transition:all .15s}
+.btn-p{background:var(--navy);color:#fff}
+.btn-p:disabled{background:var(--lg);color:var(--gr);cursor:default}
+.btn-o{background:#fff;color:var(--navy);border:1px solid var(--lg)}
+.btn-o:disabled{color:var(--lg);cursor:default}
+.card{background:#fff;border-radius:14px;padding:1.3rem;box-shadow:0 3px 18px rgba(26,39,68,.07)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem}
+.ga{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.9rem}
+@media(max-width:720px){.g2,.g3,.g4{grid-template-columns:1fr}}
+h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--navy);margin-bottom:.45rem}
+h3{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;color:var(--navy);margin-bottom:.65rem}
+.sub{color:var(--gr);margin-bottom:1.3rem;font-size:.9rem}
+.mb1{margin-bottom:.9rem}.mb2{margin-bottom:1.8rem}
+.sv{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;line-height:1}
+.sl{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-top:5px}
+.ss{color:var(--gr);font-size:.74rem;margin-top:3px}
+.tag{display:inline-block;border-radius:20px;padding:2px 9px;font-size:.72rem;font-weight:700;letter-spacing:.04em}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#243566 60%,#1e4a6e 100%);border-radius:18px;padding:2.5rem 2rem;margin-bottom:1.8rem;position:relative;overflow:hidden}
+.hero h1{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;line-height:1.1;color:#fff;margin:.9rem 0 .5rem}
+.hero h1 span{color:var(--tl)}
+.hero p{color:#a8c4d8;font-size:1rem;max-width:500px;margin-bottom:1.3rem}
+.orb1{position:absolute;right:-50px;top:-50px;width:260px;height:260px;border-radius:50%;background:rgba(0,180,160,.12);pointer-events:none}
+.orb2{position:absolute;right:30px;bottom:-70px;width:180px;height:180px;border-radius:50%;background:rgba(41,181,216,.08);pointer-events:none}
+.hbadges{display:flex;flex-wrap:wrap;gap:.6rem}
+.hb{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:.35rem .8rem;color:#fff;font-size:.78rem;font-weight:600}
+input[type=range]{width:100%;height:4px;cursor:pointer;border-radius:2px}
+.sw{margin-bottom:.95rem}
+.stt{display:flex;justify-content:space-between;margin-bottom:3px}
+.sl2{font-size:.79rem;color:var(--navy);font-weight:600}
+.svv{font-size:.84rem;font-weight:800}
+.se{display:flex;justify-content:space-between;font-size:.67rem;color:var(--gr);margin-top:2px}
+.loc-btn{padding:.45rem 1rem;border-radius:28px;border:none;cursor:pointer;font-weight:700;font-size:.78rem;font-family:inherit;transition:all .2s;background:var(--lg);color:var(--navy)}
+.step-btn{padding:.5rem 1rem;border-radius:28px;border:none;cursor:pointer;white-space:nowrap;font-weight:700;font-size:.78rem;font-family:inherit;transition:all .2s;background:var(--lg);color:var(--navy)}
+.pkg-card{border-radius:14px;padding:1.3rem;cursor:pointer;transition:all .22s;border:2px solid var(--lg);background:#fff}
+.pname{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;margin-bottom:.4rem}
+table{width:100%;border-collapse:collapse;font-size:.81rem}
+th{text-align:left;padding:.55rem .7rem;color:var(--gr);font-weight:600;border-bottom:2px solid var(--lg)}
+td{padding:.5rem .7rem;border-bottom:1px solid var(--lg)}
+.tr{text-align:right}.tc{text-align:center}
+.pb{height:7px;background:var(--lg);border-radius:3px;overflow:hidden;margin-top:3px}
+.pf{height:100%;border-radius:3px;transition:width .4s}
+.dc{background:linear-gradient(135deg,var(--navy),#243566);color:#fff;border-radius:14px;padding:1.3rem}
+.dc p{color:#a8c4d8;line-height:1.6;font-size:.88rem}
+canvas{max-width:100%!important}
+.free-box{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #f59e0b50;border-radius:11px;padding:.9rem;margin-bottom:.9rem}
+.conv-box{background:rgba(26,39,68,.04);border-radius:11px;padding:.9rem;margin-bottom:.9rem}
+.sum-box{background:linear-gradient(135deg,rgba(0,180,160,.08),rgba(41,181,216,.04));border:1px solid rgba(0,180,160,.2);border-radius:13px;padding:1.1rem}
+.grand-box{background:linear-gradient(135deg,var(--navy),#243566);border-radius:13px;padding:1.3rem;color:#fff}
+.rbrow{background:#fff;border-radius:11px;padding:.8rem 1.1rem;box-shadow:0 2px 7px rgba(26,39,68,.06);display:flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+.lnbox{background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.15);border-radius:11px;padding:.9rem}
+/* Distribution legend */
+.dist-bar{display:flex;border-radius:8px;overflow:hidden;height:30px;margin:1rem 0}
+.dist-seg{display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#fff}
+/* Pilot overview specific */
+.pilot-stat{background:#fff;border-radius:12px;padding:1.1rem 1.2rem;box-shadow:0 3px 14px rgba(26,39,68,.07);text-align:center}
+.pilot-stat .big{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;line-height:1}
+.loc-card{border-radius:12px;padding:1.1rem;border:2px solid var(--lg);background:#fff;transition:all .2s}
+.loc-card:hover{box-shadow:0 6px 20px rgba(26,39,68,.1)}
+.timeline-item{display:flex;gap:1rem;align-items:flex-start;padding:.7rem 0;border-bottom:1px solid var(--lg)}
+.timeline-dot{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:900;color:#fff;margin-top:2px}
+.goal-chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.73rem;font-weight:700;margin:2px}
+.metric-success{background:rgba(0,180,160,.08);border:1px solid rgba(0,180,160,.25);border-radius:10px;padding:.7rem;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="nav">
+  <div class="nav-inner">
+    <div class="logo"><div class="logo-icon">Y</div><div class="logo-text">Y<span>Health</span></div></div>
+    <div class="nav-tabs" id="navTabs"></div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 0: OVERVIEW ═══════════════════════════════════════════════════ -->
+<div class="page active" id="page-0">
+  <div class="hero">
+    <div class="orb1"></div><div class="orb2"></div>
+    <span class="tag" style="background:rgba(0,212,188,.15);color:var(--tl);border:1px solid rgba(0,212,188,.3)">Pre-Seed Investment Opportunity</span>
+    <h1>Transforming the Y into<br/><span>America's Community Health Hub</span></h1>
+    <p>Personalized health optimization at scale — powered by AI, anchored in community.</p>
+    <div class="hbadges">
+      <div class="hb">$92B Market by 2030</div><div class="hb">$25M+ ARR by Year 3</div>
+      <div class="hb">16:1 LTV:CAC Ratio</div><div class="hb">75%+ Gross Margin</div>
+    </div>
+  </div>
+  <h2 class="mb1">The Crisis in American Healthcare</h2>
+  <div class="g4 mb2" id="crisisStats"></div>
+  <div class="card mb2" style="background:linear-gradient(135deg,#f0faf9,#e8f4f8);border:1px solid rgba(0,180,160,.2)">
+    <h2>The YMCA: Uniquely Positioned to Lead</h2><div class="g4" id="ymcaStats"></div>
+  </div>
+  <!-- Revenue distribution model -->
+  <div class="card mb2">
+    <h3>Revenue Distribution Model</h3>
+    <p style="color:var(--gr);font-size:.85rem;margin-bottom:.75rem">Net revenue (after COGS) is split across three stakeholders on all package subscriptions and partner affiliate fees.</p>
+    <div class="dist-bar">
+      <div class="dist-seg" style="width:45%;background:var(--teal)">YHealth 45%</div>
+      <div class="dist-seg" style="width:45%;background:var(--navy)">Local YMCA 45%</div>
+      <div class="dist-seg" style="width:10%;background:#7c3aed">🧬 10%</div>
+    </div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-size:.82rem">
+      <div style="display:flex;align-items:center;gap:.4rem"><div style="width:12px;height:12px;border-radius:3px;background:var(--teal)"></div><span><b>YHealth 45%</b> — platform, AI, kiosk infrastructure</span></div>
+      <div style="display:flex;align-items:center;gap:.4rem"><div style="width:12px;height:12px;border-radius:3px;background:var(--navy)"></div><span><b>Local YMCA 45%</b> — incentivizes active promotion</span></div>
+      <div style="display:flex;align-items:center;gap:.4rem"><div style="width:12px;height:12px;border-radius:3px;background:#7c3aed"></div><span><b>Lifenome 10%</b> — AI/genomics licensing (of net)</span></div>
+    </div>
+    <div style="margin-top:.75rem;padding:.75rem;background:rgba(26,39,68,.04);border-radius:8px;font-size:.8rem;color:var(--gr)">
+      <b style="color:var(--navy)">Free Scan:</b> Branch pays YHealth $2/user/month (separate from package revenue). Lifenome charges $1/scan.
+      &nbsp;|&nbsp; <b style="color:var(--navy)">COGS:</b> Digital packages (Basic, Pro) = 10% · Testing/Supplement packages = 30%.
+    </div>
+  </div>
+  <div class="card">
+    <h2 class="mb1">Market Opportunity</h2>
+    <div class="g2" style="align-items:center;gap:2rem">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--teal)">$92B</div>
+        <div style="font-weight:700">U.S. Preventive Health Market by 2030</div>
+        <div style="color:var(--gr);font-size:.85rem;margin-top:4px">+ $82B global wellness tech market</div>
+        <div style="margin-top:1.2rem;padding:.9rem;background:rgba(198,42,138,.06);border-radius:10px;border-left:3px solid var(--mag)">
+          <div style="font-size:1.8rem;font-weight:900;color:var(--mag);font-family:'Playfair Display',serif">73%</div>
+          <div style="font-size:.88rem;font-weight:600">of consumers want personalized health tools</div>
+        </div>
+      </div>
+      <canvas id="marketChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 1: PILOT OVERVIEW ════════════════════════════════════════════ -->
+<div class="page" id="page-1">
+  <h2>Pilot Program Overview</h2>
+  <p class="sub">6-location, 12-month proof-of-concept across 5 major metro markets — 10,000 free scans, 20% conversion target, and rich population health data collection.</p>
+
+  <!-- Top stats -->
+  <div class="g4 mb2" id="pilotTopStats"></div>
+
+  <!-- Map-style location grid -->
+  <h3 class="mb1">The 6 Flagship Pilot Locations</h3>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.8rem" id="pilotLocGrid"></div>
+
+  <!-- Program structure -->
+  <div class="g2" style="gap:1.3rem;margin-bottom:1.8rem">
+    <div class="card">
+      <h3>📋 Program Structure</h3>
+      <div id="pilotTimeline"></div>
+    </div>
+    <div class="card">
+      <h3>🎯 Pilot Success Metrics</h3>
+      <div id="pilotSuccessMetrics"></div>
+    </div>
+  </div>
+
+  <!-- Free Scan & Data Collection -->
+  <div class="g2" style="gap:1.3rem;margin-bottom:1.8rem">
+    <div class="card" style="background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #f59e0b30">
+      <h3>🔍 Free Scan Program</h3>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+        <div style="text-align:center;background:#f59e0b15;border-radius:10px;padding:.75rem 1rem;min-width:90px">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--amber)">10K</div>
+          <div style="font-size:.72rem;color:var(--amber);font-weight:700">Total Scans</div>
+        </div>
+        <div style="font-size:.85rem;color:var(--navy);line-height:1.7">
+          <div>≈ <b>1,667 scans per location</b></div>
+          <div>$2/user → YHealth = <b>$240K/yr total</b></div>
+          <div>$1/scan → Lifenome = <b>$120K/yr cost</b></div>
+          <div>Net to YHealth = <b>$120K/yr</b></div>
+        </div>
+      </div>
+      <div style="font-weight:700;font-size:.85rem;margin-bottom:.5rem">Scan Measures (SH-V10 Kiosk)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.35rem" id="scanMeasures"></div>
+    </div>
+    <div class="card">
+      <h3>📊 Baseline Data Collection</h3>
+      <p style="font-size:.83rem;color:var(--gr);margin-bottom:.9rem">Every free scan captures baseline health data and member goals — building the largest community health dataset in the U.S.</p>
+      <div style="font-weight:700;font-size:.85rem;margin-bottom:.5rem">Health Goal Categories</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem" id="healthGoals"></div>
+      <div style="background:rgba(0,180,160,.06);border:1px solid rgba(0,180,160,.2);border-radius:10px;padding:.8rem">
+        <div style="font-weight:700;font-size:.83rem;margin-bottom:.4rem;color:var(--teal)">Data Value Proposition</div>
+        <div style="font-size:.78rem;color:var(--navy);line-height:1.7">
+          10K baseline scans → anonymized population health insights<br/>
+          Sold to Y National, insurers & public health orgs<br/>
+          Estimated data revenue: <b>$50K–$150K per pilot year</b>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conversion funnel -->
+  <div class="card mb2">
+    <h3>📈 Conversion Funnel — 10,000 Free Scans → Paid Packages</h3>
+    <p style="font-size:.83rem;color:var(--gr);margin-bottom:1rem">Target: 20% overall conversion from free scan to any paid package tier (2,000 paying subscribers across 6 locations at pilot launch).</p>
+    <div id="convFunnelViz"></div>
+  </div>
+
+  <!-- Physiological health baseline -->
+  <div class="card">
+    <h3>🧬 Physiological Health Baseline — What the Data Captures</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.9rem" id="baselineCategories"></div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2: MEMBER JOURNEY ════════════════════════════════════════════ -->
+<div class="page" id="page-2">
+  <h2>The Member Journey</h2>
+  <p class="sub">From first free scan to optimized healthspan — a seamless 5-step experience.</p>
+  <div style="display:flex;gap:.5rem;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:1.3rem" id="stepTabs"></div>
+  <div class="card mb2" id="stepDetail"></div>
+  <div style="display:flex;align-items:center" id="stepTimeline"></div>
+</div>
+
+<!-- ═══ PAGE 3: PACKAGES ══════════════════════════════════════════════════ -->
+<div class="page" id="page-3">
+  <h2>Y+ Health Packages</h2>
+  <p class="sub">Four tiers of personalized health optimization — 45% net revenue to YHealth, 45% to local Y, 10% to Lifenome.</p>
+  <div class="g4 mb2" id="pkgCards"></div>
+  <div id="pkgDetail"></div>
+  <div class="card" style="margin-top:1.3rem"><h3>Package Comparison</h3><div style="overflow-x:auto"><table id="pkgTable"></table></div></div>
+</div>
+
+<!-- ═══ PAGE 4: PILOT ECONOMICS ══════════════════════════════════════════ -->
+<div class="page" id="page-4">
+  <h2>Pilot Location Economics</h2>
+  <p class="sub">Each branch is independent. Revenue split: <b>45% YHealth · 45% Local Y · 10% Lifenome</b> of net revenue (after COGS). Free scans billed at $2/user to the branch.</p>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.3rem" id="locBtns"></div>
+  <div class="g2" style="gap:1.3rem;margin-bottom:1.3rem">
+    <div>
+      <div class="card mb1">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem">
+          <div><div style="font-family:'Playfair Display',serif;font-weight:900;font-size:1.05rem" id="locTitle">—</div><span id="locTag" class="tag">—</span></div>
+          <div style="font-size:.72rem;color:var(--gr);text-align:right">Independent<br/>branch data</div>
+        </div>
+        <div class="free-box">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem">
+            <span style="font-size:1.1rem">🔍</span>
+            <span style="font-weight:800;color:var(--amber)">Free Scan Program</span>
+            <span class="tag" style="background:#f59e0b20;color:var(--amber);border:1px solid #f59e0b40">$2/user/mo → YHealth</span>
+          </div>
+          <div id="freeScanSliderWrap"></div>
+        </div>
+        <div class="conv-box">
+          <div style="font-weight:700;font-size:.82rem;margin-bottom:.65rem">📊 Conversion: Free Scan → Paid Package</div>
+          <div id="convSliders"></div>
+          <div style="font-size:.72rem;color:var(--gr);padding-top:.45rem;border-top:1px solid var(--lg);display:flex;gap:1rem">
+            <span>Total converted: <b id="totalConvPct" style="color:var(--teal)">0%</b></span>
+            <span>Remaining: <b id="unconvPct" style="color:var(--gr)">100%</b></span>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="stt"><span class="sl2">Partner Sales / month</span><span class="svv" id="partnerVal" style="color:var(--mag)">$5.0K</span></div>
+          <input type="range" id="partnerSlider" min="0" max="50000" step="500" value="5000" style="accent-color:var(--mag)" oninput="saveBranchState();updatePilot()">
+          <div class="se"><span>$0</span><span>$50K</span></div>
+        </div>
+        <div style="font-size:.72rem;color:var(--gr)">YHealth earns 10% commission on partner sales (separate from 45/45/10 split)</div>
+      </div>
+      <div class="card" style="background:rgba(26,39,68,.03);box-shadow:none;border:1px solid var(--lg)">
+        <div style="font-weight:700;font-size:.82rem;margin-bottom:.65rem">Conversion Detail — <span id="convBranchName">—</span></div>
+        <div id="convSummary"></div>
+      </div>
+    </div>
+    <div>
+      <div class="sum-box mb1">
+        <div style="font-weight:800;color:var(--teal);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.7rem" id="branchRevTitle">Branch Annual Revenue</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:.9rem">
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:900;color:var(--teal);font-family:'Playfair Display',serif" id="bGross">—</div><div style="font-size:.68rem;color:var(--gr)">Gross Revenue</div></div>
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:900;color:var(--cyan);font-family:'Playfair Display',serif" id="bYH">—</div><div style="font-size:.68rem;color:var(--gr)">YHealth (45%)</div></div>
+          <div style="text-align:center"><div style="font-size:1.2rem;font-weight:900;font-family:'Playfair Display',serif" id="bLocalY">—</div><div style="font-size:.68rem;color:var(--gr)">Local Y (45%)</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.9rem">
+          <div style="text-align:center;background:rgba(124,58,237,.08);border-radius:8px;padding:.5rem"><div style="font-size:1rem;font-weight:900;color:#7c3aed;font-family:'Playfair Display',serif" id="bLifenome">—</div><div style="font-size:.65rem;color:#7c3aed">Lifenome (10%)</div></div>
+          <div style="text-align:center;background:rgba(245,158,11,.1);border-radius:8px;padding:.5rem"><div style="font-size:1rem;font-weight:900;color:var(--amber);font-family:'Playfair Display',serif" id="bScan">—</div><div style="font-size:.65rem;color:var(--amber)">Scan Revenue (YHealth)</div></div>
+        </div>
+        <canvas id="pilotChart" height="155"></canvas>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;font-size:.88rem;margin-bottom:.7rem">Revenue Breakdown</div>
+        <div id="pilotBreakdown"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border:none;border-top:2px solid var(--lg);margin:0 0 1.3rem"/>
+  <h3 style="margin-bottom:.9rem">📍 All 6 Branches — Combined Annual Revenue</h3>
+  <div id="allBranchRows" style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.3rem"></div>
+  <div class="grand-box">
+    <div style="font-weight:800;font-size:.78rem;color:#a8c4d8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.9rem">Grand Total — All 6 Pilot Locations</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.9rem">
+      <div style="text-align:center"><div style="font-size:1.3rem;font-weight:900;color:var(--tl);font-family:'Playfair Display',serif" id="grandGross">—</div><div style="font-size:.67rem;color:#a8c4d8">Gross Revenue</div></div>
+      <div style="text-align:center"><div style="font-size:1.3rem;font-weight:900;color:#fff;font-family:'Playfair Display',serif" id="grandYH">—</div><div style="font-size:.67rem;color:#a8c4d8">YHealth (45%)</div></div>
+      <div style="text-align:center"><div style="font-size:1.3rem;font-weight:900;color:#7dd3fc;font-family:'Playfair Display',serif" id="grandLocalY">—</div><div style="font-size:.67rem;color:#a8c4d8">Local YMCAs (45%)</div></div>
+      <div style="text-align:center"><div style="font-size:1.3rem;font-weight:900;color:#c4b5fd;font-family:'Playfair Display',serif" id="grandLnome">—</div><div style="font-size:.67rem;color:#a8c4d8">Lifenome (10%)</div></div>
+      <div style="text-align:center"><div style="font-size:1.3rem;font-weight:900;color:#86efac;font-family:'Playfair Display',serif" id="grandScans">—</div><div style="font-size:.67rem;color:#a8c4d8">Annual Scans</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 5: 5-YEAR MODEL ═════════════════════════════════════════════ -->
+<div class="page" id="page-5">
+  <h2>5-Year P&amp;L Model</h2>
+  <p class="sub">National expansion — 45/45/10 revenue split on net, Lifenome licensing deducted from YHealth's share.</p>
+  <div class="g2" style="gap:1.3rem">
+    <div>
+      <div class="card mb1">
+        <div style="font-weight:800;margin-bottom:1.1rem;font-size:.92rem;border-bottom:2px solid var(--teal);padding-bottom:.45rem">Model Assumptions</div>
+        <div id="modelSliders"></div>
+        <div style="background:rgba(0,180,160,.08);border-radius:9px;padding:.75rem;margin-top:.45rem">
+          <div style="font-weight:700;font-size:.79rem;margin-bottom:.4rem">Year 3 Snapshot</div>
+          <div style="font-size:.75rem;color:var(--gr);line-height:1.9" id="y3snap">—</div>
+        </div>
+      </div>
+      <div class="lnbox">
+        <div style="font-weight:800;color:#7c3aed;font-size:.82rem;margin-bottom:.7rem">🧬 Revenue Distribution (Net after COGS)</div>
+        <div style="font-size:.78rem;color:var(--navy);line-height:2">
+          <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(124,58,237,.1);padding:2px 0"><span>YHealth share</span><b style="color:var(--teal)">45% of net</b></div>
+          <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(124,58,237,.1);padding:2px 0"><span>Local YMCA share</span><b style="color:var(--navy)">45% of net</b></div>
+          <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(124,58,237,.1);padding:2px 0"><span>Lifenome share</span><b style="color:#7c3aed">10% of net</b></div>
+          <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(124,58,237,.1);padding:2px 0"><span>COGS — Digital (Basic/Pro)</span><b>10%</b></div>
+          <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(124,58,237,.1);padding:2px 0"><span>COGS — Testing/Supplement</span><b>30%</b></div>
+          <div style="display:flex;justify-content:space-between;padding:2px 0"><span>Free Scan (YHealth charge)</span><b style="color:var(--amber)">$2/scan · $1 to Lifenome</b></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div id="yearCards" style="display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem;margin-bottom:.9rem"></div>
+      <div class="card mb1">
+        <div style="font-weight:700;margin-bottom:.9rem;font-size:.88rem">Revenue, Lifenome &amp; EBITDA (5-Year)</div>
+        <canvas id="fiveYearChart" height="195"></canvas>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:.7rem;font-size:.88rem">Full P&amp;L Table</div>
+        <div style="overflow-x:auto"><table id="plTable"></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 6: INVESTMENT ════════════════════════════════════════════════ -->
+<div class="page" id="page-6">
+  <h2>Investment Opportunity</h2>
+  <p class="sub">$3M Pre-Seed to build, pilot, and validate the platform.</p>
+  <div class="g2 mb2">
+    <div class="dc">
+      <div style="font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;color:var(--tl)">$3M</div>
+      <div style="font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:.45rem">Pre-Seed Round</div>
+      <p>To build, pilot, and validate the platform that makes every YMCA a preventive health destination.</p>
+      <div style="margin-top:1.2rem;border-top:1px solid rgba(255,255,255,.15);padding-top:.9rem">
+        <div style="font-weight:800;color:#fff;margin-bottom:.4rem">Our Vision</div>
+        <p>Make every Y a place where people don't just exercise — they optimize their healthspan.</p>
+      </div>
+    </div>
+    <div class="card"><h3>Use of Funds</h3><div id="fundAlloc"></div></div>
+  </div>
+  <div class="card mb2"><h3>Exceptional Unit Economics</h3><div class="ga" id="unitEcon"></div></div>
+  <div class="card">
+    <h3>Pilot Success Metrics &amp; Scale Path</h3>
+    <div class="g2" style="gap:1.3rem;align-items:start">
+      <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.7rem">12-Month Targets</div><div id="pilotMetrics"></div></div>
+      <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.7rem">Expansion Roadmap</div><canvas id="expansionChart" height="150"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<div id="bnav">
+  <button class="btn btn-o" id="prevBtn" onclick="navigate(-1)" disabled>← Previous</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn btn-p" id="nextBtn" onclick="navigate(1)">Next →</button>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────────────────────
+const C={navy:'#1a2744',teal:'#00b4a0',tl:'#00d4bc',cyan:'#29b5d8',mag:'#c62a8a',gr:'#8596a8',lg:'#dde4ec',amber:'#92400e',purple:'#7c3aed'};
+const PAGES=["🏠 Overview","📋 Pilot Overview","🚶 Journey","📦 Packages","📊 Pilot Economics","📈 5-Year Model","💰 Investment"];
+
+// Revenue model: 45/45/10 of NET (after COGS)
+const REV={yh:.45,localY:.45,lnome:.10};
+
+const PKGS=[
+  {id:1,name:"Y+ Basic",    price:10,cogs:.10,color:C.cyan,   desc:"Digital biomarker tracking, AI programs & continuous progress monitoring"},
+  {id:2,name:"Y+ Pro",      price:20,cogs:.10,color:C.teal,   desc:"All Basic + specialized program (GLP-1, elite athlete, healthy aging 50+, pregnancy, menopause, chronic disease)"},
+  {id:3,name:"Y+ Premium",  price:30,cogs:.30,color:C.navy,   desc:"All Pro + quarterly blood tests + DNA nutrition & fitness test"},
+  {id:4,name:"Y+ Supplement",price:30,cogs:.30,color:C.mag,  desc:"Basic + monthly personalized supplements"},
+];
+const LOCS=[
+  {city:"Central Florida",members:150000,color:"#00b4a0",highlight:"Strong community health infrastructure"},
+  {city:"Los Angeles",    members:260000,color:"#29b5d8",highlight:"Health-conscious, tech-forward market"},
+  {city:"North Carolina", members:230000,color:"#1a2744",highlight:"Strong community health infrastructure"},
+  {city:"Houston",        members:179000,color:"#c62a8a",highlight:"High chronic disease burden — max impact"},
+  {city:"Atlanta",        members:250000,color:"#e67e22",highlight:"YMCA innovation hub, ideal testing ground"},
+  {city:"San Diego",      members:340000,color:"#8e44ad",highlight:"340K members — largest pilot location"},
+];
+// Target: 10,000 scans across 6 locations ≈ 1,667 each
+const TARGET_SCANS=10000;
+const TARGET_CONV_PCT=20; // 20% overall
+
+// Per-branch state (independent)
+const BD=LOCS.map((_,i)=>({
+  freeScans:Math.round(TARGET_SCANS/6/250)*250, // ≈1500
+  conv:{1:8,2:5,3:4,4:3}, // ~20% total
+  partner:5000
+}));
+
+let curPage=0,curLoc=0,selPkg=null,charts={};
+const modelVals={pct:20,conv:5,price:18,partner:3000,scanPct:15};
+
+// ── helpers ──────────────────────────────────────────────────────────────────
+function fm(n){const a=Math.abs(n);if(a>=1e6)return'$'+(n/1e6).toFixed(2)+'M';if(a>=1e3)return'$'+(n/1e3).toFixed(1)+'K';return'$'+Math.round(n).toLocaleString();}
+function pp(n){return(isFinite(n)?n:0).toFixed(1)+'%';}
+function dc(k){if(charts[k]){charts[k].destroy();delete charts[k];}}
+function slider(lbl,id,mn,mx,st,val,col,fmt,cb){
+  return`<div class="sw"><div class="stt"><span class="sl2">${lbl}</span><span class="svv" id="${id}V" style="color:${col}">${fmt(val)}</span></div><input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${val}" style="accent-color:${col}" oninput="${cb}"><div class="se"><span>${fmt(mn)}</span><span>${fmt(mx)}</span></div></div>`;
+}
+
+// Core revenue calc: gross → net (after COGS) → split 45/45/10
+function calcNetSplit(grossRevenue, cogs){
+  const net=grossRevenue*(1-cogs);
+  return{gross:grossRevenue,net,yh:net*REV.yh,localY:net*REV.localY,lnome:net*REV.lnome};
+}
+
+function calcBranch(li){
+  const d=BD[li];
+  const scans=d.freeScans;
+  // Scan revenue: branch pays YHealth $2/scan/month, Lifenome charges $1/scan
+  const scanGrossYH=scans*2*12;
+  const scanLnomeCost=scans*1.00*12;
+  const scanNetYH=scanGrossYH-scanLnomeCost;
+
+  let totalGross=scanGrossYH,totalYH=scanNetYH,totalLocalY=0,totalLnome=scanLnomeCost;
+  const pkgRows=[];
+
+  PKGS.forEach(pkg=>{
+    const frac=(d.conv[pkg.id]||0)/100;
+    const subs=Math.round(scans*frac);
+    const g=subs*pkg.price*12;
+    const sp=calcNetSplit(g,pkg.cogs);
+    totalGross+=sp.gross;
+    totalYH+=sp.yh;
+    totalLocalY+=sp.localY;
+    totalLnome+=sp.lnome;
+    pkgRows.push({pkg,subs,gross:sp.gross,net:sp.net,yh:sp.yh,localY:sp.localY,lnome:sp.lnome});
+  });
+
+  const partAnn=d.partner*12;
+  // Partner: YHealth gets 10% commission (outside the 45/45/10 split — it's affiliate revenue)
+  const partYH=partAnn*0.10;
+  totalGross+=partAnn;
+  totalYH+=partYH;
+
+  return{scans,scanGrossYH,scanNetYH,scanLnomeCost,totalGross,totalYH,totalLocalY,totalLnome,pkgRows,partAnn,partYH};
+}
+
+// ── navigation ───────────────────────────────────────────────────────────────
+function navigate(d){setPage(curPage+d);}
+function setPage(i){
+  if(i<0||i>=PAGES.length)return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+i).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+  document.getElementById('prevBtn').disabled=i===0;
+  document.getElementById('nextBtn').disabled=i===PAGES.length-1;
+  curPage=i;
+  if(i===0)initOverview();if(i===1)initPilotOverview();if(i===2)initJourney();
+  if(i===3)initPackages();if(i===4)initPilotEcon();if(i===5)initModel();if(i===6)initInvestment();
+  window.scrollTo(0,0);
+}
+(()=>{
+  const t=document.getElementById('navTabs'),d=document.getElementById('dots');
+  PAGES.forEach((p,i)=>{
+    const b=document.createElement('button');b.className='nav-btn'+(i===0?' active':'');b.textContent=p;b.onclick=()=>setPage(i);t.appendChild(b);
+    const dot=document.createElement('div');dot.className='dot'+(i===0?' active':'');dot.onclick=()=>setPage(i);d.appendChild(dot);
+  });
+})();
+
+// ── PAGE 0: OVERVIEW ─────────────────────────────────────────────────────────
+let p0done=false;
+function initOverview(){
+  if(p0done)return;p0done=true;
+  document.getElementById('crisisStats').innerHTML=[
+    {label:"U.S. Healthcare Spend",value:"$5.6T",sub:"Yet life expectancy is declining",color:C.mag},
+    {label:"Chronic Disease Spending",value:"86%",sub:"Of all healthcare costs",color:C.navy},
+    {label:"Adults w/ Chronic Disease",value:"6/10",sub:"4 in 10 have two or more",color:C.teal},
+    {label:"Prevention Budget",value:"<5%",sub:"Catastrophically underfunded",color:C.cyan},
+  ].map(s=>`<div class="card"><div style="text-align:center;padding:1.2rem"><div class="sv" style="color:${s.color}">${s.value}</div><div class="sl">${s.label}</div><div class="ss">${s.sub}</div></div></div>`).join('');
+  document.getElementById('ymcaStats').innerHTML=[
+    {label:"Locations",value:"2,560",sub:"Every major metro & rural area"},
+    {label:"Members",value:"20M+",sub:"Largest community health network"},
+    {label:"Population Reach",value:"77%",sub:"Within 10 miles of a Y"},
+    {label:"Years of Trust",value:"175",sub:"Legacy of health & wellbeing"},
+  ].map(s=>`<div style="text-align:center;padding:1.2rem"><div class="sv" style="color:var(--teal)">${s.value}</div><div class="sl">${s.label}</div><div class="ss">${s.sub}</div></div>`).join('');
+  dc('market');charts.market=new Chart(document.getElementById('marketChart').getContext('2d'),{type:'bar',data:{labels:['U.S. Preventive Health','Global Wellness Tech'],datasets:[{data:[92,82],backgroundColor:[C.teal,C.cyan],borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>`$${v}B`},grid:{color:'#eee'}},x:{grid:{display:false}}},responsive:true,maintainAspectRatio:true}});
+}
+
+// ── PAGE 1: PILOT OVERVIEW ────────────────────────────────────────────────────
+let p1done=false;
+function initPilotOverview(){
+  if(p1done)return;p1done=true;
+
+  // Top stats
+  const totalMembers=LOCS.reduce((a,l)=>a+l.members,0);
+  const target2000=TARGET_SCANS*TARGET_CONV_PCT/100;
+  document.getElementById('pilotTopStats').innerHTML=[
+    {label:"Pilot Locations",value:"6",sub:"Across 5 major U.S. metros",color:C.teal},
+    {label:"Combined Members",value:(totalMembers/1000).toFixed(0)+"K",sub:"Across all 6 pilot Ys",color:C.navy},
+    {label:"Free Scan Target",value:"10,000",sub:"Across all 6 locations",color:C.amber},
+    {label:"Conversion Target",value:"2,000",sub:"20% of scans → paid tier",color:C.mag},
+  ].map(s=>`<div class="pilot-stat"><div class="big" style="color:${s.color}">${s.value}</div><div style="font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;margin-top:5px">${s.label}</div><div style="font-size:.73rem;color:var(--gr);margin-top:3px">${s.sub}</div></div>`).join('');
+
+  // Location grid
+  document.getElementById('pilotLocGrid').innerHTML=LOCS.map((loc,i)=>`
+    <div class="loc-card" style="border-color:${loc.color}40">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.6rem">
+        <div style="width:36px;height:36px;border-radius:9px;background:${loc.color};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:.9rem">${i+1}</div>
+        <span class="tag" style="background:${loc.color}18;color:${loc.color};border:1px solid ${loc.color}30">${(loc.members/1000).toFixed(0)}K members</span>
+      </div>
+      <div style="font-weight:800;color:var(--navy);font-size:.95rem;margin-bottom:.3rem">${loc.city}</div>
+      <div style="font-size:.77rem;color:var(--gr)">${loc.highlight}</div>
+      <div style="margin-top:.6rem;font-size:.75rem;color:${loc.color};font-weight:700">~${Math.round(TARGET_SCANS/6).toLocaleString()} free scans · ~${Math.round(TARGET_SCANS/6*TARGET_CONV_PCT/100)} target paid subs</div>
+    </div>`).join('');
+
+  // Program timeline
+  document.getElementById('pilotTimeline').innerHTML=[
+    {month:"Month 1–2",title:"Setup & Staff Training",desc:"Kiosk installation, staff certification, member outreach campaign launch",color:C.cyan},
+    {month:"Month 3–4",title:"Free Scan Rollout",desc:"10,000 free physiological age assessments across all 6 locations",color:C.teal},
+    {month:"Month 5–6",title:"Conversion Push",desc:"Personalized follow-up, package recommendations based on scan results",color:C.navy},
+    {month:"Month 7–12",title:"Optimize & Scale",desc:"Monthly data review, refine conversion, prove NPS > 50, prep for expansion",color:C.mag},
+  ].map(s=>`<div class="timeline-item">
+    <div class="timeline-dot" style="background:${s.color}">${s.month.split('–')[0].replace('Month ','M')}</div>
+    <div>
+      <div style="font-weight:700;font-size:.85rem">${s.title}</div>
+      <div style="font-size:.75rem;color:var(--gr);margin-top:2px">${s.desc}</div>
+      <div style="font-size:.72rem;color:${s.color};font-weight:600;margin-top:2px">${s.month}</div>
+    </div>
+  </div>`).join('');
+
+  // Success metrics
+  document.getElementById('pilotSuccessMetrics').innerHTML=[
+    {val:"10,000",label:"Free scan completions (total)",color:C.amber},
+    {val:"≥20%",label:"Conversion to any paid package",color:C.teal},
+    {val:"500+",label:"Scans per location per month",color:C.cyan},
+    {val:"NPS>50",label:"Member satisfaction score",color:C.mag},
+    {val:"↓Bio Age",label:"Measurable improvement in physiological age",color:C.navy},
+    {val:"$2.0M",label:"Pilot-year ARR target",color:C.teal},
+  ].map(s=>`<div class="metric-success" style="margin-bottom:.55rem;border-color:${s.color}30;background:${s.color}06"><div style="font-weight:900;font-size:1.1rem;color:${s.color}">${s.val}</div><div style="font-size:.75rem;color:var(--navy);margin-top:2px">${s.label}</div></div>`).join('');
+
+  // Scan measures
+  document.getElementById('scanMeasures').innerHTML=[
+    "Height","Weight","BMI","Blood Pressure","Heart Rate","Bone Mass",
+    "Body Fat %","Muscle Mass","BRM","PPG Scan","SpO₂","Physiological Age"
+  ].map(m=>`<span class="goal-chip" style="background:var(--amber)15;color:var(--amber);border:1px solid var(--amber)30">${m}</span>`).join('');
+
+  // Health goals
+  document.getElementById('healthGoals').innerHTML=[
+    {label:"Weight Loss",color:C.teal},{label:"Muscle Gain",color:C.cyan},
+    {label:"Heart Health",color:C.mag},{label:"Longevity",color:C.navy},
+    {label:"Diabetes Prevention",color:"#e67e22"},{label:"Stress Reduction",color:"#7c3aed"},
+    {label:"Pregnancy / Postpartum",color:C.mag},{label:"Menopause Support",color:"#db2777"},
+    {label:"Chronic Disease Mgmt",color:"#dc2626"},{label:"Athletic Performance",color:C.teal},
+    {label:"Healthy Aging 50+",color:"#d97706"},{label:"Sleep Optimization",color:"#6d28d9"},
+  ].map(g=>`<span class="goal-chip" style="background:${g.color}15;color:${g.color};border:1px solid ${g.color}30">${g.label}</span>`).join('');
+
+  // Conversion funnel
+  const funnelData=[
+    {label:"Free Scans Completed",n:10000,pct:100,color:"#f59e0b"},
+    {label:"Engaged (opened app / follow-up)",n:7000,pct:70,color:C.cyan},
+    {label:"Package Recommendation Viewed",n:4000,pct:40,color:C.teal},
+    {label:"Trial / Intro Offer Started",n:2800,pct:28,color:C.navy},
+    {label:"Paid Subscriber (20% target)",n:2000,pct:20,color:C.mag},
+  ];
+  document.getElementById('convFunnelViz').innerHTML=funnelData.map(f=>`
+    <div style="margin-bottom:.6rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:.8rem">
+        <span style="font-weight:600;color:var(--navy)">${f.label}</span>
+        <span style="font-weight:800;color:${f.color}">${f.n.toLocaleString()} (${f.pct}%)</span>
+      </div>
+      <div style="height:28px;background:var(--lg);border-radius:6px;overflow:hidden">
+        <div style="height:100%;width:${f.pct}%;background:${f.color};border-radius:6px;display:flex;align-items:center;padding:0 .6rem;transition:width .4s">
+          <span style="font-size:.72rem;font-weight:800;color:#fff;white-space:nowrap">${f.n.toLocaleString()}</span>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Baseline categories
+  document.getElementById('baselineCategories').innerHTML=[
+    {icon:"💓",title:"Cardiovascular",items:["Blood pressure","Resting heart rate","Heart rate variability","SpO₂"]},
+    {icon:"⚖️",title:"Body Composition",items:["BMI","Body fat %","Muscle mass","Bone mass","Visceral fat index"]},
+    {icon:"🧬",title:"Metabolic",items:["BRM (basal metabolic rate)","Estimated metabolic age","Body water %","Protein level"]},
+    {icon:"🏃",title:"Functional Fitness",items:["Activity level","Exercise frequency","Functional strength","Flexibility estimate"]},
+    {icon:"🎯",title:"Health Goals",items:["Primary health goal","Secondary goal","Readiness to change","Preferred program type"]},
+    {icon:"📋",title:"Lifestyle Context",items:["Age & sex","Self-reported conditions","Medications","Sleep quality"]},
+  ].map(cat=>`<div style="background:rgba(26,39,68,.03);border-radius:10px;padding:.85rem;border:1px solid var(--lg)">
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem"><span style="font-size:1.3rem">${cat.icon}</span><span style="font-weight:700;font-size:.87rem">${cat.title}</span></div>
+    ${cat.items.map(it=>`<div style="font-size:.74rem;color:var(--gr);padding:2px 0;display:flex;align-items:center;gap:.4rem"><span style="color:var(--teal)">›</span>${it}</div>`).join('')}
+  </div>`).join('');
+}
+
+// ── PAGE 2: JOURNEY ────────────────────────────────────────────────────────────
+let jStep=0,p2done=false;
+const STEPS=[
+  {icon:"🏥",title:"Walk Up to Kiosk",sub:"Free Health Check-Up Station",color:C.cyan,
+   details:["Self-service kiosk at every Y location","10.2\" LCD touchscreen, PPG finger scan","No appointment — free for all members","Takes 4–6 minutes total"],
+   visual:`<div style="background:linear-gradient(135deg,rgba(41,181,216,.1),rgba(41,181,216,.03));border:2px solid rgba(41,181,216,.25);border-radius:14px;padding:1.3rem;text-align:center"><div style="font-size:3.5rem;margin-bottom:.5rem">🖥️</div><div style="font-weight:800;font-size:1rem">SH-V10 Health Kiosk</div><div style="color:var(--gr);font-size:.82rem;margin-top:5px">Height · Weight · BMI · BP · Heart Rate</div><div style="color:var(--gr);font-size:.82rem">Bone Mass · Fat% · Muscle Mass</div><div style="margin-top:.9rem;background:rgba(41,181,216,.15);border-radius:7px;padding:.55rem;color:#29b5d8;font-weight:700;font-size:.82rem">Branch pays $2/scan · 10K total pilot scans</div></div>`},
+  {icon:"🔬",title:"Biometric Scan",sub:"Finger Scan & Body Analysis",color:C.teal,
+   details:["PPG finger scan: heart rate, SpO₂, HRV","AI body composition via smart scale","Optional wearable device sync","HIPAA-compliant encrypted data capture"],
+   visual:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">${[["💓","Heart Rate"],["🫀","Blood Pressure"],["⚖️","Body Fat%"],["💪","Muscle Mass"],["🦴","Bone Mass"],["⌚","Wearable Sync"]].map(([ic,lb])=>`<div style="background:rgba(0,180,160,.1);border:1px solid rgba(0,180,160,.2);border-radius:9px;padding:.75rem;text-align:center"><div style="font-size:1.4rem">${ic}</div><div style="font-size:.73rem;font-weight:600;margin-top:4px">${lb}</div></div>`).join('')}</div>`},
+  {icon:"🧬",title:"Physiological Age",sub:"Your True Biological Age",color:C.purple,
+   details:["AI calculates physiological vs. chronological age","Benchmarked against 600,000+ user dataset","Identifies your biggest longevity levers","Goal-setting for biological age reduction"],
+   visual:`<div style="background:linear-gradient(135deg,#1a2744,#243566);border-radius:14px;padding:1.8rem;text-align:center;color:#fff"><div style="font-size:.82rem;color:#a8c4d8;margin-bottom:7px;letter-spacing:.1em;text-transform:uppercase">Your Result</div><div style="font-size:4.5rem;font-weight:900;font-family:'Playfair Display',serif;color:#00d4bc;line-height:1">28</div><div style="color:#a8c4d8;font-size:.88rem;margin-top:4px">PHYSIOLOGICAL AGE</div><div style="margin-top:.9rem;background:rgba(255,255,255,.08);border-radius:7px;padding:.65rem;font-size:.8rem;color:#a8c4d8">Goal: 25 · You're 3 years ahead of your peers</div><div style="margin-top:.9rem;height:7px;background:rgba(255,255,255,.15);border-radius:3px"><div style="height:100%;width:72%;background:linear-gradient(90deg,#00b4a0,#29b5d8);border-radius:3px"></div></div></div>`},
+  {icon:"📋",title:"Personalized Programs",sub:"Your Health Action Plan",color:C.mag,
+   details:["AI-matched Y classes, trainers & programs","Nutrition, sleep, stress & fitness plans","Reports you can share with your doctor","Partner product recommendations"],
+   visual:`<div>${[["🏋️","Strength Training","3x/week",C.teal],["🥗","Anti-Inflammatory Diet","Nutrition Plan",C.cyan],["😴","Sleep Optimization","7-9 hrs target",C.purple],["🧘","Stress Management","Mindfulness",C.mag]].map(([ic,lb,tg,cl])=>`<div style="display:flex;align-items:center;gap:.65rem;padding:.6rem .9rem;border-radius:9px;background:${cl}10;border:1px solid ${cl}25;margin-bottom:.45rem"><span style="font-size:1.3rem">${ic}</span><span style="font-weight:600;flex:1;font-size:.85rem">${lb}</span><span class="tag" style="background:${cl}18;color:${cl};border:1px solid ${cl}40">${tg}</span></div>`).join('')}</div>`},
+  {icon:"📈",title:"Track & Optimize",sub:"Ongoing Monitoring & Growth",color:C.navy,
+   details:["Monthly physiological age recalculation","In-app progress dashboard","Subscription upgrades for deeper insights","Community challenges & accountability"],
+   visual:`<div><div style="background:rgba(26,39,68,.06);border-radius:11px;padding:.9rem;margin-bottom:.7rem"><div style="font-size:.74rem;color:var(--gr);margin-bottom:7px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">6-Month Progress</div><div style="display:flex;align-items:flex-end;gap:4px;height:55px">${[32,31,30,29.5,28.5,28].map((v,i)=>`<div style="flex:1;background:linear-gradient(180deg,var(--teal),var(--cyan));border-radius:3px 3px 0 0;height:${(v-26)/(32-26)*100}%;opacity:${.5+i*.1};min-height:4px"></div>`).join('')}</div><div style="display:flex;justify-content:space-between;font-size:.67rem;color:var(--gr);margin-top:3px">${['Jan','Feb','Mar','Apr','May','Jun'].map(m=>`<span>${m}</span>`).join('')}</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.45rem">${[["4 pts","Age Reduced"],["89%","Adherence"],["12","Classes"],["A+","Blood Markers"]].map(([v,l])=>`<div style="background:#fff;border:1px solid var(--lg);border-radius:9px;padding:.65rem;text-align:center"><div style="font-weight:900;font-size:1.1rem;color:var(--teal)">${v}</div><div style="font-size:.7rem;color:var(--gr)">${l}</div></div>`).join('')}</div></div>`},
+];
+function initJourney(){if(p2done){renderStep();return;}p2done=true;const t=document.getElementById('stepTabs');STEPS.forEach((s,i)=>{const b=document.createElement('button');b.className='step-btn'+(i===0?' active':'');if(i===0){b.style.background=s.color;b.style.color='#fff';b.style.boxShadow=`0 3px 10px ${s.color}40`;}b.innerHTML=`${s.icon} Step ${i+1}: ${s.title}`;b.onclick=()=>{jStep=i;renderStep();};t.appendChild(b);});renderStep();}
+function renderStep(){
+  const s=STEPS[jStep];
+  document.querySelectorAll('.step-btn').forEach((b,i)=>{b.classList.toggle('active',i===jStep);b.style.background=i===jStep?STEPS[i].color:'';b.style.color=i===jStep?'#fff':'';b.style.boxShadow=i===jStep?`0 3px 10px ${STEPS[i].color}40`:'';});
+  document.getElementById('stepDetail').innerHTML=`<div class="g2" style="align-items:start;gap:1.8rem"><div><div style="display:flex;align-items:center;gap:.9rem;margin-bottom:.9rem"><div style="width:48px;height:48px;border-radius:12px;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:1.5rem">${s.icon}</div><div><div style="font-weight:900;font-size:1.1rem">${s.title}</div><div style="color:var(--gr);font-size:.82rem">${s.sub}</div></div></div><ul style="padding-left:1.1rem">${s.details.map(d=>`<li style="margin-bottom:.55rem;font-size:.88rem;line-height:1.5">${d}</li>`).join('')}</ul><div style="margin-top:1.2rem;display:flex;gap:.45rem">${jStep>0?`<button class="btn btn-o" onclick="jStep--;renderStep()">← Previous</button>`:''}${jStep<STEPS.length-1?`<button class="btn btn-p" style="background:${s.color}" onclick="jStep++;renderStep()">Next Step →</button>`:''}</div></div><div>${s.visual}</div></div>`;
+  const tl=document.getElementById('stepTimeline');tl.innerHTML=STEPS.map((st,i)=>`<div style="width:34px;height:34px;border-radius:50%;background:${jStep>=i?st.color:'var(--lg)'};display:flex;align-items:center;justify-content:center;font-size:.9rem;cursor:pointer;flex-shrink:0;box-shadow:${jStep===i?`0 3px 10px ${st.color}50`:''}" onclick="jStep=${i};renderStep()">${jStep>i?'✓':st.icon}</div>${i<STEPS.length-1?`<div style="flex:1;height:3px;background:${jStep>i?C.teal:'var(--lg)'}"></div>`:''}`).join('');
+}
+
+// ── PAGE 3: PACKAGES ──────────────────────────────────────────────────────────
+let p3done=false;
+function initPackages(){if(p3done){renderPkgCards();return;}p3done=true;renderPkgCards();renderPkgTable();}
+function renderPkgCards(){
+  document.getElementById('pkgCards').innerHTML=PKGS.map(p=>`<div class="pkg-card${selPkg===p.id?' selected':''}" style="${selPkg===p.id?`background:${p.color};color:#fff;border-color:${p.color};box-shadow:0 6px 24px ${p.color}40;transform:translateY(-3px)`:''}" onclick="selPkg=${selPkg===p.id?'null':p.id};renderPkgCards()"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.65rem"><span style="font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.7;color:${selPkg===p.id?'#fff':p.color}">Package ${p.id}</span><span style="background:${selPkg===p.id?'rgba(255,255,255,.2)':p.color+'18'};color:${selPkg===p.id?'#fff':p.color};border-radius:18px;padding:2px 9px;font-size:.79rem;font-weight:800">+$${p.price}/mo</span></div><div class="pname" style="color:${selPkg===p.id?'#fff':''}">${p.name}</div><p style="font-size:.8rem;line-height:1.55;opacity:.8;margin:0;color:${selPkg===p.id?'rgba(255,255,255,.85)':''}">${p.desc}</p></div>`).join('');
+  renderPkgDetail();
+}
+function renderPkgDetail(){
+  const el=document.getElementById('pkgDetail');if(!selPkg){el.innerHTML='';return;}
+  const p=PKGS.find(x=>x.id===selPkg);
+  const net1000=1000*p.price*12*(1-p.cogs);
+  const programs=["GLP-1 / Weight Management","Elite Athlete Performance","Healthy Aging 50+","Pregnancy & Postpartum","Menopause Care","Chronic Disease Management"];
+  el.innerHTML=`<div class="card" style="border:2px solid ${p.color}30;background:linear-gradient(135deg,${p.color}04,#fff)"><div class="g2" style="gap:1.8rem"><div><h3 style="color:${p.color}">${p.name} — Deep Dive</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.1rem">${[["Monthly Price",`$${p.price}`,"on top of YMCA membership"],["COGS",`${(p.cogs*100).toFixed(0)}%`,"of gross revenue"],["Net Margin",`${((1-p.cogs)*100).toFixed(0)}%`,"after COGS"],["Annual Revenue",`$${p.price*12}`,"per member/year"]].map(([l,v,s])=>`<div style="background:${p.color}10;border-radius:9px;padding:.75rem"><div style="font-weight:900;color:${p.color};font-size:1.2rem">${v}</div><div style="font-weight:700;font-size:.76rem">${l}</div><div style="color:var(--gr);font-size:.7rem">${s}</div></div>`).join('')}</div>${p.id===2?`<div style="font-weight:700;margin-bottom:.45rem;font-size:.85rem">Specialized Programs:</div><div style="display:flex;flex-wrap:wrap;gap:.35rem">${programs.map(pr=>`<span class="tag" style="background:${p.color}18;color:${p.color};border:1px solid ${p.color}40">${pr}</span>`).join('')}</div>`:''}</div><div><div style="font-weight:700;margin-bottom:.7rem">Revenue Split per 1,000 Subscribers/Year</div><div style="font-size:.8rem;color:var(--gr);margin-bottom:.7rem">Gross: ${fm(1000*p.price*12)} → Net after COGS: ${fm(net1000)}</div><div style="display:flex;flex-direction:column;gap:.4rem">${[["YHealth (45%)",net1000*REV.yh,p.color],["Local Y (45%)",net1000*REV.localY,C.navy],["Lifenome (10%)",net1000*REV.lnome,C.purple]].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;align-items:center;background:${c}08;border-radius:8px;padding:.55rem .8rem;border:1px solid ${c}20"><span style="font-weight:600;font-size:.82rem">${l}</span><span style="font-weight:900;color:${c};font-size:.95rem">${fm(v)}</span></div>`).join('')}</div><div style="margin-top:.8rem;background:rgba(26,39,68,.06);border-radius:9px;padding:.75rem;display:flex;height:18px;border-radius:6px;overflow:hidden"><div style="flex:.45;background:${p.color}"></div><div style="flex:.45;background:${C.navy}"></div><div style="flex:.10;background:${C.purple}"></div></div><div style="display:flex;gap:.8rem;margin-top:.3rem;font-size:.68rem;color:var(--gr)"><span>■ YHealth 45%</span><span>■ Local Y 45%</span><span>■ Lifenome 10%</span></div></div></div></div>`;
+}
+function renderPkgTable(){
+  const feats=[["Digital biomarker tracking",1,1,1,1],["AI action plans",1,1,1,1],["Progress monitoring",1,1,1,1],["Specialized programs",0,1,1,0],["Quarterly blood tests",0,0,1,0],["DNA test",0,0,1,0],["Monthly supplements",0,0,0,1]];
+  document.getElementById('pkgTable').innerHTML=`<thead><tr><th>Feature</th>${PKGS.map(p=>`<th class="tc" style="color:${p.color}">${p.name}<br><span style="color:var(--gr);font-weight:600;font-size:.76rem">+$${p.price}/mo</span></th>`).join('')}</tr></thead><tbody>${feats.map(([f,...vs])=>`<tr><td>${f}</td>${vs.map((v,i)=>`<td class="tc" style="color:${v?PKGS[i].color:'var(--lg)'};font-size:1rem">${v?'✓':'–'}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+// ── PAGE 4: PILOT ECONOMICS ────────────────────────────────────────────────────
+let p4init=false;
+function saveBranchState(){
+  const d=BD[curLoc];
+  const fs=document.getElementById('fsSl');if(fs)d.freeScans=+fs.value;
+  PKGS.forEach(p=>{const el=document.getElementById(`cv${p.id}`);if(el)d.conv[p.id]=+el.value;});
+  const ps=document.getElementById('partnerSlider');if(ps)d.partner=+ps.value;
+}
+function initPilotEcon(){
+  if(!p4init){
+    p4init=true;
+    const lb=document.getElementById('locBtns');
+    LOCS.forEach((loc,i)=>{
+      const b=document.createElement('button');b.className='loc-btn'+(i===0?' active':'');
+      if(i===0){b.style.background=loc.color;b.style.color='#fff';b.style.boxShadow=`0 3px 10px ${loc.color}40`;}
+      b.textContent=loc.city;
+      b.onclick=()=>{saveBranchState();curLoc=i;document.querySelectorAll('.loc-btn').forEach((x,j)=>{x.classList.toggle('active',j===i);x.style.background=j===i?LOCS[j].color:'';x.style.color=j===i?'#fff':'';x.style.boxShadow=j===i?`0 3px 10px ${LOCS[j].color}40`:'';});renderPilotControls();updatePilot();};
+      lb.appendChild(b);
+    });
+  }
+  renderPilotControls();updatePilot();
+}
+function renderPilotControls(){
+  const d=BD[curLoc];
+  document.getElementById('freeScanSliderWrap').innerHTML=`<div class="stt"><span class="sl2">Free Scan participants / month</span><span class="svv" id="fsV" style="color:var(--amber)">${d.freeScans.toLocaleString()}</span></div><input type="range" id="fsSl" min="0" max="10000" step="250" value="${d.freeScans}" style="accent-color:var(--amberL)" oninput="BD[curLoc].freeScans=+this.value;document.getElementById('fsV').textContent=Number(this.value).toLocaleString();updatePilot()"><div class="se"><span>0</span><span>10,000</span></div>`;
+  document.getElementById('convSliders').innerHTML=PKGS.map(p=>`<div class="sw" style="margin-bottom:.65rem"><div class="stt"><span class="sl2" style="color:${p.color}">→ ${p.name} (+$${p.price}/mo)</span><span class="svv" id="cv${p.id}V" style="color:${p.color}">${d.conv[p.id]}%</span></div><input type="range" id="cv${p.id}" min="0" max="50" step="1" value="${d.conv[p.id]}" style="accent-color:${p.color}" oninput="BD[curLoc].conv[${p.id}]=+this.value;document.getElementById('cv${p.id}V').textContent=this.value+'%';updatePilot()"><div class="se"><span>0%</span><span>50%</span></div></div>`).join('');
+  document.getElementById('partnerSlider').value=d.partner;
+  document.getElementById('partnerVal').textContent=`$${(d.partner/1000).toFixed(1)}K`;
+}
+function updatePilot(){
+  const loc=LOCS[curLoc];const d=BD[curLoc];const r=calcBranch(curLoc);
+  document.getElementById('locTitle').textContent=`${loc.city} YMCA`;
+  document.getElementById('locTag').textContent=`${(loc.members/1000).toFixed(0)}K members`;
+  document.getElementById('locTag').style.cssText=`background:${loc.color}20;color:${loc.color};border:1px solid ${loc.color}40;display:inline-block;margin-top:4px`;
+  document.getElementById('convBranchName').textContent=loc.city;
+  document.getElementById('branchRevTitle').textContent=`${loc.city} — Annual Revenue`;
+  const tc=PKGS.reduce((a,p)=>a+(d.conv[p.id]||0),0);
+  document.getElementById('totalConvPct').textContent=tc+'%';
+  document.getElementById('unconvPct').textContent=Math.max(0,100-tc)+'%';
+  document.getElementById('bGross').textContent=fm(r.totalGross);
+  document.getElementById('bYH').textContent=fm(r.totalYH);
+  document.getElementById('bLocalY').textContent=fm(r.totalLocalY);
+  document.getElementById('bLocalY').style.color=loc.color;
+  document.getElementById('bLifenome').textContent=fm(r.totalLnome);
+  document.getElementById('bScan').textContent=fm(r.scanNetYH);
+
+  document.getElementById('convSummary').innerHTML=`
+    <div style="display:flex;justify-content:space-between;padding:.38rem 0;border-bottom:1px dashed var(--lg);font-size:.79rem">
+      <span style="color:var(--amber);font-weight:700">🔍 Free Scans (${d.freeScans.toLocaleString()}/mo) — $2/user</span>
+      <span style="font-weight:800;color:var(--amber)">Net ${fm(r.scanNetYH)}/yr to YHealth</span>
+    </div>
+    ${r.pkgRows.map(({pkg,subs,gross,net,yh,localY,lnome})=>`<div style="display:flex;justify-content:space-between;padding:.38rem 0;border-bottom:1px dashed var(--lg);font-size:.79rem"><div style="display:flex;align-items:center;gap:.4rem"><div style="width:8px;height:8px;border-radius:50%;background:${pkg.color}"></div><span style="color:${pkg.color};font-weight:700">${pkg.name}</span><span style="color:var(--gr)">${(d.conv[pkg.id]||0)}%→${subs} subs</span></div><div style="text-align:right;font-size:.78rem"><span style="color:${pkg.color};font-weight:800">${fm(yh)} YH</span> <span style="color:var(--gr)">/ ${fm(localY)} Y</span> <span style="color:${C.purple}">/ ${fm(lnome)} LN</span></div></div>`).join('')}
+    <div style="display:flex;justify-content:space-between;padding:.38rem 0;font-size:.79rem">
+      <span style="color:var(--mag);font-weight:700">🛒 Partner (10% affiliate)</span>
+      <span style="font-weight:800;color:var(--mag)">${fm(r.partYH)}/yr to YHealth</span>
+    </div>`;
+
+  dc('pilot');
+  const labels=['Scans',...PKGS.map(p=>p.name),'Partners'];
+  const yhD=[r.scanNetYH,...r.pkgRows.map(x=>x.yh),r.partYH];
+  const lyD=[0,...r.pkgRows.map(x=>x.localY),0];
+  const lnD=[r.scanLnomeCost,...r.pkgRows.map(x=>x.lnome),0];
+  charts.pilot=new Chart(document.getElementById('pilotChart').getContext('2d'),{
+    type:'bar',data:{labels,datasets:[
+      {label:'YHealth',data:yhD,backgroundColor:C.teal,borderRadius:4,stack:'s'},
+      {label:'Local Y',data:lyD,backgroundColor:C.navy,borderRadius:4,stack:'s'},
+      {label:'Lifenome',data:lnD,backgroundColor:'#7c3aed',borderRadius:4,stack:'s'},
+    ]},
+    options:{plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},scales:{y:{ticks:{callback:v=>fm(v),font:{size:10}},grid:{color:'#eee'}},x:{grid:{display:false},ticks:{font:{size:9}}}},responsive:true,maintainAspectRatio:true}
+  });
+
+  document.getElementById('pilotBreakdown').innerHTML=`
+    <div style="display:flex;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid var(--lg);font-size:.8rem">
+      <div style="display:flex;align-items:center;gap:.4rem"><span>🔍</span><span style="font-weight:600">Free Scans</span><span style="color:var(--gr)">(${d.freeScans}/mo)</span></div>
+      <div style="text-align:right"><div style="font-weight:800;color:var(--amber)">${fm(r.scanGrossYH)}</div><div style="color:var(--gr);font-size:.68rem">gross · net to YH: ${fm(r.scanNetYH)}</div></div>
+    </div>
+    ${r.pkgRows.map(({pkg,subs,gross,net,yh,localY,lnome})=>`<div style="display:flex;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid var(--lg);font-size:.8rem"><div style="display:flex;align-items:center;gap:.4rem"><div style="width:8px;height:8px;border-radius:50%;background:${pkg.color}"></div><span style="font-weight:600">${pkg.name}</span><span style="color:var(--gr)">(${subs} subs)</span></div><div style="text-align:right"><div style="font-weight:800;color:${pkg.color}">${fm(gross)}</div><div style="color:var(--gr);font-size:.68rem">gross · net:${fm(net)} · YH:${fm(yh)}</div></div></div>`).join('')}
+    <div style="display:flex;justify-content:space-between;padding:.42rem 0;font-size:.8rem">
+      <div style="display:flex;align-items:center;gap:.4rem"><div style="width:8px;height:8px;border-radius:50%;background:var(--mag)"></div><span style="font-weight:600">Partner Sales</span></div>
+      <div style="text-align:right"><div style="font-weight:800;color:var(--mag)">${fm(r.partAnn)}</div><div style="color:var(--gr);font-size:.68rem">total sales · YH: ${fm(r.partYH)}</div></div>
+    </div>`;
+
+  updateAllBranches();
+}
+function updateAllBranches(){
+  let gGross=0,gYH=0,gLocalY=0,gLnome=0,gScans=0;
+  document.getElementById('allBranchRows').innerHTML=LOCS.map((loc,i)=>{
+    const r=calcBranch(i);gGross+=r.totalGross;gYH+=r.totalYH;gLocalY+=r.totalLocalY;gLnome+=r.totalLnome;gScans+=BD[i].freeScans;
+    return`<div class="rbrow"><div style="display:flex;align-items:center;gap:.45rem;min-width:160px"><div style="width:11px;height:11px;border-radius:50%;background:${loc.color}"></div><span style="font-weight:700;font-size:.85rem">${loc.city}</span><span class="tag" style="background:${loc.color}15;color:${loc.color};border:1px solid ${loc.color}30;font-size:.66rem">${BD[i].freeScans.toLocaleString()} scans/mo</span></div><div style="flex:1;display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:flex-end;align-items:center"><div style="text-align:center"><div style="font-weight:800;font-size:.87rem;color:var(--teal)">${fm(r.totalGross)}</div><div style="font-size:.66rem;color:var(--gr)">Gross</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.87rem;color:var(--cyan)">${fm(r.totalYH)}</div><div style="font-size:.66rem;color:var(--gr)">YHealth</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.87rem;color:${loc.color}">${fm(r.totalLocalY)}</div><div style="font-size:.66rem;color:var(--gr)">Local Y</div></div><div style="text-align:center"><div style="font-weight:800;font-size:.87rem;color:${C.purple}">${fm(r.totalLnome)}</div><div style="font-size:.66rem;color:var(--gr)">Lifenome</div></div></div></div>`;
+  }).join('');
+  document.getElementById('grandGross').textContent=fm(gGross);
+  document.getElementById('grandYH').textContent=fm(gYH);
+  document.getElementById('grandLocalY').textContent=fm(gLocalY);
+  document.getElementById('grandLnome').textContent=fm(gLnome);
+  document.getElementById('grandScans').textContent=(gScans*12).toLocaleString()+'/yr';
+}
+
+// ── PAGE 5: 5-YEAR MODEL ───────────────────────────────────────────────────────
+let p5init=false;
+function initModel(){
+  if(!p5init){
+    p5init=true;
+    document.getElementById('modelSliders').innerHTML=[
+      slider('YMCA Locations (Year 3)','mPct',5,100,1,modelVals.pct,C.teal,v=>`${Math.round(2560*v/100)} Ys (${v}%)`,'updateModel()'),
+      slider('Paid Package Conversion Rate','mConv',1,20,.5,modelVals.conv,C.cyan,v=>`${v}%`,'updateModel()'),
+      slider('Avg. Paid Package Price','mPrice',10,30,1,modelVals.price,C.navy,v=>`$${v}/mo`,'updateModel()'),
+      slider('Partner Sales per Y/month','mPartner',0,20000,500,modelVals.partner,C.mag,v=>`$${(v/1000).toFixed(1)}K`,'updateModel()'),
+      slider('Free Scan Users (% of members)','mScan',1,50,1,modelVals.scanPct,'#92400e',v=>`${v}%`,'updateModel()'),
+    ].join('');
+  }
+  updateModel();
+}
+function updateModel(){
+  ['mPct','mConv','mPrice','mPartner','mScan'].forEach(id=>{if(document.getElementById(id))modelVals[id.replace('m','').toLowerCase()]=+document.getElementById(id).value;});
+  modelVals.pct=+document.getElementById('mPct').value;
+  modelVals.conv=+document.getElementById('mConv').value;
+  modelVals.price=+document.getElementById('mPrice').value;
+  modelVals.partner=+document.getElementById('mPartner').value;
+  modelVals.scanPct=+document.getElementById('mScan').value;
+  const fns={mPct:v=>`${Math.round(2560*v/100)} Ys (${v}%)`,mConv:v=>`${v}%`,mPrice:v=>`$${v}/mo`,mPartner:v=>`$${(v/1000).toFixed(1)}K`,mScan:v=>`${v}%`};
+  ['mPct','mConv','mPrice','mPartner','mScan'].forEach(id=>{const el=document.getElementById(id+'V');if(el)el.textContent=fns[id](+document.getElementById(id).value);});
+
+  const AVG=7800;
+  const calcY=(nYs,yr)=>{
+    const members=nYs*AVG;
+    const scansPerMonth=members*(modelVals.scanPct/100);
+    const scanGrossYH=scansPerMonth*2*12;
+    const scanLnome=scansPerMonth*1.00*12;
+    const scanNetYH=scanGrossYH-scanLnome;
+
+    const subs=members*(modelVals.conv/100);
+    // pkg mix: 40% basic, 30% pro, 15% prem, 15% supp
+    const b=subs*.40,p=subs*.30,pr=subs*.15,s=subs*.15;
+    const avgCogs=(b*10*.10+p*20*.10+pr*30*.30+s*30*.30)/(b*10+p*20+pr*30+s*30);
+    const grossSub=(b*10+p*20+pr*30+s*30)*12;
+    const netSub=grossSub*(1-avgCogs);
+    const yhSub=netSub*REV.yh;
+    const lySub=netSub*REV.localY;
+    const lnomeSub=netSub*REV.lnome;
+
+    const partRev=nYs*modelVals.partner*12;
+    const partYH=partRev*0.10;
+    const kiosk=nYs*1000*12;
+
+    const gross=grossSub+partRev+kiosk+scanGrossYH;
+    const yhTotal=yhSub+partYH+kiosk+scanNetYH;
+    const lnomeTotal=lnomeSub+scanLnome;
+    const opex=yhTotal*(yr<=1?.68:yr<=2?.48:.28);
+    const ebitda=yhTotal-opex;
+
+    return{nYs,subs:Math.round(subs),scans:Math.round(scansPerMonth*12),gross:Math.round(gross),yh:Math.round(yhTotal),ly:Math.round(lySub),lnome:Math.round(lnomeTotal),ebitda:Math.round(ebitda)};
+  };
+
+  const y3Ys=Math.round(2560*(modelVals.pct/100));
+  const data=[
+    {yr:'Y1',lbl:'Pilot',...calcY(5,1)},
+    {yr:'Y2',lbl:'Expand',...calcY(Math.round(y3Ys*.25),2)},
+    {yr:'Y3',lbl:'Scale',...calcY(y3Ys,3)},
+    {yr:'Y4',lbl:'Growth',...calcY(Math.round(y3Ys*1.3),4)},
+    {yr:'Y5',lbl:'Maturity',...calcY(Math.round(y3Ys*1.6),5)},
+  ];
+  const d3=data[2];
+  document.getElementById('y3snap').innerHTML=`${d3.nYs} locations · ${(d3.subs/1000).toFixed(0)}K paid subs · ${(d3.scans/1000).toFixed(0)}K scans/yr<br>Gross: <b>${fm(d3.gross)}</b> · YHealth: <b style="color:${C.teal}">${fm(d3.yh)}</b><br>Local Y: <b>${fm(d3.ly)}</b> · Lifenome: <b style="color:${C.purple}">${fm(d3.lnome)}</b><br>EBITDA: <b style="color:${d3.ebitda>0?C.teal:C.mag}">${d3.ebitda>0?fm(d3.ebitda):`(${fm(Math.abs(d3.ebitda))})`}</b>`;
+
+  document.getElementById('yearCards').innerHTML=data.map((d,i)=>`<div class="card" style="padding:.8rem;text-align:center;${i===2?`border:2px solid ${C.teal}`:''};border-radius:11px">${i===2?`<div style="font-size:.58rem;color:var(--teal);font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em">Target</div>`:''}<div style="font-size:.68rem;color:var(--gr);font-weight:700">${d.yr} · ${d.lbl}</div><div style="font-size:1.05rem;font-weight:900;color:var(--navy);font-family:'Playfair Display',serif;margin-top:3px">${fm(d.gross)}</div><div style="font-size:.6rem;color:var(--gr)">Gross Revenue</div><div style="margin:4px 0;border-top:1px dashed var(--lg)"></div><div style="font-size:.9rem;font-weight:900;color:var(--teal);font-family:'Playfair Display',serif">${fm(d.yh)}</div><div style="font-size:.6rem;color:var(--gr)">YHealth</div><div style="font-size:.82rem;font-weight:900;color:var(--cyan);font-family:'Playfair Display',serif;margin-top:2px">${fm(d.ly)}</div><div style="font-size:.6rem;color:var(--gr)">Local YMCAs</div><div style="font-size:.7rem;font-weight:700;color:${C.purple};margin-top:2px">(${fm(d.lnome)})</div><div style="font-size:.58rem;color:var(--gr)">Lifenome</div><div style="font-size:.72rem;font-weight:700;color:${d.ebitda>0?C.teal:C.mag};margin-top:2px">${d.ebitda>0?fm(d.ebitda):`(${fm(Math.abs(d.ebitda))})`}</div><div style="font-size:.58rem;color:var(--gr)">EBITDA</div></div>`).join('');
+
+  dc('fiveYear');
+  charts.fiveYear=new Chart(document.getElementById('fiveYearChart').getContext('2d'),{
+    type:'line',data:{labels:data.map(d=>d.yr),datasets:[
+      {label:'Gross Revenue',data:data.map(d=>d.gross),borderColor:C.navy,backgroundColor:C.navy+'10',fill:false,tension:.4,pointRadius:5,borderWidth:2,borderDash:[4,2]},
+      {label:'YHealth Revenue',data:data.map(d=>d.yh),borderColor:C.teal,backgroundColor:C.teal+'18',fill:true,tension:.4,pointRadius:5,borderWidth:2.5},
+      {label:'Local YMCAs',data:data.map(d=>d.ly),borderColor:C.cyan,backgroundColor:C.cyan+'15',fill:true,tension:.4,pointRadius:4,borderWidth:2},
+      {label:'Lifenome Share',data:data.map(d=>d.lnome),borderColor:C.purple,backgroundColor:C.purple+'10',fill:true,tension:.4,pointRadius:4,borderWidth:1.5},
+      {label:'EBITDA',data:data.map(d=>d.ebitda),borderColor:C.mag,backgroundColor:'transparent',tension:.4,pointRadius:5,borderWidth:2,borderDash:[6,3]},
+    ]},
+    options:{plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12}}},scales:{y:{ticks:{callback:v=>fm(v)},grid:{color:'#eee'}},x:{grid:{display:false}}},responsive:true,maintainAspectRatio:true}
+  });
+
+  const rowDefs=[
+    ['Y Locations',d=>d.nYs.toLocaleString(),false],
+    ['Paid Subscribers',d=>(d.subs/1000).toFixed(0)+'K',false],
+    ['Annual Free Scans',d=>(d.scans/1000).toFixed(0)+'K',false],
+    ['Gross Revenue',d=>fm(d.gross),false],
+    ['YHealth Revenue (45%)',d=>fm(d.yh),false,'yh'],
+    ['Local Y Revenue (45%)',d=>fm(d.ly),false],
+    ['Lifenome (10%)',d=>fm(d.lnome),true],
+    ['EBITDA',d=>d.ebitda>0?fm(d.ebitda):`(${fm(Math.abs(d.ebitda))})`,false,'ebitda'],
+    ['EBITDA Margin',d=>d.yh?pp(d.ebitda/d.yh*100):'–',false],
+  ];
+  document.getElementById('plTable').innerHTML=`<thead><tr style="background:rgba(26,39,68,.04)"><th>Metric</th>${data.map(d=>`<th class="tr" style="font-weight:800">${d.yr}</th>`).join('')}</tr></thead><tbody>${rowDefs.map(([lbl,fn,isLn,tag])=>`<tr${isLn?` style="color:${C.purple};font-style:italic"`:tag==='yh'?` style="background:rgba(0,180,160,.03)"`:tag==='ebitda'?` style="font-weight:700;border-top:2px solid var(--lg)"`:''}><<td style="font-weight:600">${lbl}</td>${data.map(d=>`<td class="tr" style="color:${isLn?C.purple:tag==='ebitda'?(d.ebitda>0?C.teal:C.mag):tag==='yh'?C.teal:'var(--gr)'}">${fn(d)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+// ── PAGE 6: INVESTMENT ────────────────────────────────────────────────────────
+let p6done=false;
+function initInvestment(){
+  if(p6done)return;p6done=true;
+  document.getElementById('fundAlloc').innerHTML=[
+    {label:"Product & Engineering",pct:40,amount:1200000,desc:"Platform, AI models, kiosk hardware, mobile app",color:C.teal},
+    {label:"Pilot Operations",pct:25,amount:750000,desc:"6-location deployment, lab partnerships, kiosk installation",color:C.cyan},
+    {label:"Team & Talent",pct:20,amount:600000,desc:"CTO, Head of Health Science, operations, design",color:C.navy},
+    {label:"Marketing & Growth",pct:15,amount:450000,desc:"Member acquisition, in-Y marketing, partnerships",color:C.mag},
+  ].map(a=>`<div style="margin-bottom:.9rem"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-weight:600;font-size:.82rem">${a.label}</span><span style="font-weight:800;color:${a.color}">${a.pct}% · $${(a.amount/1000).toFixed(0)}K</span></div><div class="pb"><div class="pf" style="width:${a.pct}%;background:${a.color}"></div></div><div style="font-size:.72rem;color:var(--gr);margin-top:2px">${a.desc}</div></div>`).join('');
+  document.getElementById('unitEcon').innerHTML=[
+    {label:"Health Membership LTV",value:"$480",sub:"$20/mo × 24 avg months",color:C.teal},
+    {label:"Member CAC",value:"~$30",sub:"In-Y kiosk funnel, near zero",color:C.cyan},
+    {label:"LTV:CAC Ratio",value:"16:1",sub:"Exceptional capital efficiency",color:C.navy},
+    {label:"Gross Margin",value:"75%+",sub:"Lab costs ~$40/test at scale",color:C.purple},
+    {label:"Kiosk Payback",value:"4 months",sub:"$1,000/mo SaaS license",color:C.mag},
+  ].map(s=>`<div class="card" style="background:${s.color}08;border:1px solid ${s.color}20"><div style="text-align:center;padding:1rem"><div class="sv" style="color:${s.color}">${s.value}</div><div class="sl">${s.label}</div><div class="ss">${s.sub}</div></div></div>`).join('');
+  document.getElementById('pilotMetrics').innerHTML=[["10,000","Free scans completed across 6 locations"],["≥20%","Conversion to any paid tier (2,000 subs)"],["NPS>50","Member satisfaction score"],["$2M","Pilot-year ARR target"],["↓Bio Age","Measurable physiological age improvement"]].map(([v,l])=>`<div style="display:flex;gap:.65rem;align-items:center;margin-bottom:.55rem"><div style="background:var(--teal);color:#fff;border-radius:5px;padding:2px 7px;font-size:.77rem;font-weight:800;white-space:nowrap">${v}</div><span style="font-size:.83rem">${l}</span></div>`).join('');
+  dc('expansion');charts.expansion=new Chart(document.getElementById('expansionChart').getContext('2d'),{type:'bar',data:{labels:['Y1 Pilot','Y2 Expand','Y3 Scale'],datasets:[{label:'Y Locations',data:[6,50,512],backgroundColor:[C.cyan,C.teal,C.navy],borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{grid:{color:'#eee'}},x:{grid:{display:false}}},responsive:true,maintainAspectRatio:true}});
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+initOverview();
+</script>
+</body>
+</html>
