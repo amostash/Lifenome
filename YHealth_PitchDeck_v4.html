@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YHealth — America's Community Health Operating System</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d1f3c;
+  --navy2:#1a3055;
+  --teal:#009e82;
+  --teal2:#00c9a7;
+  --cyan:#1e9bbf;
+  --amber:#d97706;
+  --rose:#dc2626;
+  --slate:#f2f5f9;
+  --mid:#64748b;
+  --white:#ffffff;
+  --gold:#b45309;
+  --bg:#ffffff;
+  --surface:#f8fafc;
+  --border:#e2e8f0;
+  --text:#0d1f3c;
+  --text2:#334155;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);overflow:hidden}
+
+/* ===== DECK FRAME ===== */
+.deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+
+/* ===== SLIDES ===== */
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .55s ease, transform .55s ease;
+  transform:translateX(60px);
+  overflow:hidden;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit-left{opacity:0;transform:translateX(-60px)}
+
+/* ===== NAV ===== */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 2rem;
+  box-shadow:0 -2px 16px rgba(0,0,0,.06);
+}
+.nav-dots{display:flex;gap:.35rem;flex-wrap:wrap;max-width:55%}
+.nd{
+  width:22px;height:6px;border-radius:3px;
+  background:#cbd5e1;
+  cursor:pointer;transition:all .2s;
+}
+.nd.on{background:var(--teal);width:32px}
+.nav-btns{display:flex;gap:.6rem;align-items:center}
+.nav-btn{
+  padding:.42rem 1.2rem;border-radius:8px;border:none;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;
+  cursor:pointer;transition:all .18s;
+}
+.nb-prev{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+.nb-next{background:var(--teal);color:var(--text)}
+.nb-prev:hover{background:var(--border)}
+.nb-next:hover{background:var(--teal2)}
+.slide-counter{color:var(--mid);font-size:.78rem;font-weight:500}
+
+/* ===== CONTENT AREA ===== */
+.slide-inner{flex:1;overflow:auto;padding:2.5rem 3.5rem 6rem;scrollbar-width:thin;scrollbar-color:rgba(0,201,167,.2) transparent}
+.slide-inner::-webkit-scrollbar{width:4px}
+.slide-inner::-webkit-scrollbar-thumb{background:rgba(0,201,167,.2);border-radius:2px}
+
+/* ===== SHARED TYPOGRAPHY ===== */
+.eyebrow{
+  font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem;
+}
+.eyebrow::before{content:'';width:24px;height:2px;background:var(--teal);border-radius:1px}
+h1.headline{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.08;
+  color:var(--text);margin-bottom:.8rem;
+}
+h1.headline span{color:var(--teal)}
+h2.section-title{
+  font-family:'Fraunces',serif;font-weight:700;
+  font-size:clamp(1.5rem,3vw,2.4rem);line-height:1.12;
+  color:var(--text);margin-bottom:.5rem;
+}
+h2.section-title span{color:var(--teal)}
+.lead{color:var(--text2);font-size:1rem;line-height:1.65;max-width:620px;margin-bottom:1.8rem}
+.sub-lead{color:var(--mid);font-size:.88rem;line-height:1.6}
+
+/* ===== BACKGROUNDS ===== */
+.bg-dark{background:#ffffff}
+.bg-teal{background:#f0fdf9}
+.bg-mid{background:#f8fafc}
+
+/* ===== DECORATIVE ORBS ===== */
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px)}
+.orb-1{width:420px;height:420px;background:rgba(0,158,130,.06);top:-120px;right:-80px}
+.orb-2{width:280px;height:280px;background:rgba(30,155,191,.05);bottom:100px;left:-60px}
+.orb-3{width:200px;height:200px;background:rgba(217,119,6,.04);top:40%;right:10%}
+
+/* ===== GRID UTILITIES ===== */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.g32{display:grid;grid-template-columns:3fr 2fr;gap:2rem;align-items:start}
+.g23{display:grid;grid-template-columns:2fr 3fr;gap:2rem;align-items:start}
+
+/* ===== STAT BLOCKS ===== */
+.stat-block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;padding:1.4rem 1.5rem;
+  position:relative;overflow:hidden;
+}
+.stat-block::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,158,130,.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+.stat-val{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:2.4rem;color:var(--teal);line-height:1;margin-bottom:.3rem;
+}
+.stat-val.amber{color:var(--amber)}
+.stat-val.rose{color:var(--rose)}
+.stat-val.cyan{color:var(--cyan)}
+.stat-label{font-weight:700;font-size:.8rem;color:var(--text2);letter-spacing:.03em}
+.stat-sub{font-size:.72rem;color:var(--mid);margin-top:.2rem}
+
+/* ===== FEATURE CARDS ===== */
+.feat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;padding:1.2rem;
+  transition:border-color .2s, box-shadow .2s;
+}
+.feat-card:hover{border-color:rgba(0,158,130,.35);box-shadow:0 4px 16px rgba(0,158,130,.08)}
+.feat-icon{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;margin-bottom:.8rem;
+}
+.feat-card h4{color:var(--text);font-weight:700;font-size:.92rem;margin-bottom:.35rem}
+.feat-card p{color:var(--mid);font-size:.8rem;line-height:1.55}
+
+/* ===== PILL TAGS ===== */
+.pill{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.3rem .85rem;border-radius:20px;
+  font-size:.75rem;font-weight:700;letter-spacing:.03em;
+}
+.pill-teal{background:rgba(0,158,130,.1);color:var(--teal);border:1px solid rgba(0,158,130,.2)}
+.pill-amber{background:rgba(217,119,6,.1);color:var(--amber);border:1px solid rgba(217,119,6,.18)}
+.pill-rose{background:rgba(220,38,38,.08);color:var(--rose);border:1px solid rgba(220,38,38,.15)}
+.pill-cyan{background:rgba(30,155,191,.1);color:var(--cyan);border:1px solid rgba(30,155,191,.18)}
+
+/* ===== DIVIDER ===== */
+.divider{width:60px;height:3px;background:linear-gradient(90deg,var(--teal),var(--cyan));border-radius:2px;margin:1rem 0 1.5rem}
+
+/* ===== JOURNEY MAP ===== */
+.journey-track{
+  display:flex;gap:0;align-items:stretch;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;margin-bottom:1.2rem;
+}
+.journey-phase{
+  flex:1;padding:1.3rem 1.1rem;position:relative;
+  border-right:1px solid var(--border);
+}
+.journey-phase:last-child{border-right:none}
+.jp-label{
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:.6rem;padding:.2rem .6rem;border-radius:4px;display:inline-block;
+}
+.jp-title{color:var(--text);font-weight:700;font-size:.9rem;margin-bottom:.5rem}
+.jp-items{list-style:none;margin:0;padding:0}
+.jp-items li{
+  color:var(--mid);font-size:.77rem;padding:.22rem 0;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:.4rem;
+}
+.jp-items li::before{content:'→';color:var(--teal);font-size:.7rem;flex-shrink:0}
+.jp-arrow{
+  position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;background:rgba(0,158,130,.12);
+  clip-path:polygon(0 50%,100% 0,100% 100%);
+  z-index:2;
+}
+
+/* ===== VALUE PROP TABS ===== */
+.vp-card{
+  border-radius:14px;padding:1.4rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+}
+.vp-card h3{color:var(--text);font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.6rem}
+.vp-item{
+  display:flex;align-items:flex-start;gap:.65rem;
+  padding:.5rem 0;border-bottom:1px solid var(--border);
+}
+.vp-item:last-child{border-bottom:none}
+.vp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:.45rem}
+.vp-text{color:var(--text2);font-size:.82rem;line-height:1.5}
+
+/* ===== REVENUE STREAMS ===== */
+.rev-row{
+  display:flex;align-items:center;gap:1rem;
+  padding:.85rem 1.1rem;border-radius:10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  margin-bottom:.6rem;
+  transition:border-color .2s,box-shadow .2s;
+}
+.rev-row:hover{border-color:rgba(0,158,130,.3);box-shadow:0 3px 12px rgba(0,158,130,.06)}
+.rev-icon{
+  width:36px;height:36px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.rev-label{flex:1}
+.rev-label strong{color:var(--text);font-size:.88rem;display:block;margin-bottom:.15rem}
+.rev-label span{color:var(--mid);font-size:.76rem}
+.rev-val{font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem;color:var(--teal);white-space:nowrap}
+.rev-split-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;gap:2px;margin-top:.4rem}
+.rsb-seg{height:100%;border-radius:2px}
+
+/* ===== FINANCIAL TABLE ===== */
+.fin-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.fin-table th{
+  text-align:left;padding:.65rem .8rem;
+  color:var(--mid);font-weight:600;font-size:.74rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  border-bottom:2px solid var(--border);
+  background:var(--surface);
+}
+.fin-table td{
+  padding:.6rem .8rem;
+  border-bottom:1px solid var(--border);
+  color:var(--text2);
+}
+.fin-table td:first-child{color:var(--mid);font-size:.8rem}
+.fin-table .highlight td{color:var(--teal);font-weight:700}
+.fin-table .bold td{font-weight:700;color:var(--text)}
+.fin-table .ebitda-row td{color:var(--amber);font-weight:700}
+.yr-badge{
+  display:inline-block;padding:.2rem .55rem;border-radius:5px;
+  font-size:.72rem;font-weight:700;
+  background:rgba(0,158,130,.08);color:var(--teal);
+}
+
+/* ===== ORG CHART ===== */
+.org-level{display:flex;justify-content:center;gap:1.2rem;margin-bottom:.8rem;flex-wrap:wrap}
+.org-box{
+  border-radius:10px;padding:.75rem 1.1rem;text-align:center;
+  border:1.5px solid;min-width:160px;
+}
+.org-connector{
+  display:flex;justify-content:center;
+  margin:.25rem 0;
+}
+.org-line-v{width:2px;height:18px;background:#cbd5e1}
+
+/* ===== TEAM CARDS ===== */
+.team-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;padding:1.3rem;
+  display:flex;gap:1rem;align-items:flex-start;
+}
+.team-avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;font-weight:900;font-size:1.1rem;
+  color:var(--text);flex-shrink:0;
+  border:2px solid rgba(0,158,130,.25);
+}
+.team-info h4{color:var(--text);font-weight:700;font-size:.95rem;margin-bottom:.15rem}
+.team-role{color:var(--teal);font-size:.78rem;font-weight:600;margin-bottom:.4rem}
+.team-bio{color:var(--text2);font-size:.79rem;line-height:1.55}
+
+/* ===== COMPARISON GRID ===== */
+.comp-row{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;
+  gap:0;align-items:center;
+  border-bottom:1px solid var(--border);
+}
+.comp-row:first-child{
+  background:var(--surface);
+  border-bottom:2px solid var(--border);
+}
+.comp-cell{padding:.6rem .8rem;font-size:.8rem}
+.comp-row:first-child .comp-cell{
+  color:var(--mid);font-weight:700;font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.comp-row.lifenome-col .comp-cell:nth-child(2){
+  background:rgba(0,158,130,.06);border-left:2px solid rgba(0,158,130,.3);
+  color:var(--teal);font-weight:700;
+}
+.comp-check{color:var(--teal);font-size:1rem}
+.comp-no{color:#cbd5e1;font-size:.85rem}
+.comp-partial{color:var(--amber);font-size:.85rem}
+
+/* ===== EXECUTION TIMELINE ===== */
+.exec-track{display:flex;gap:0;margin-bottom:1.5rem}
+.exec-phase{
+  flex:1;padding:1rem 1.1rem;
+  border:1px solid var(--border);
+  border-right:none;
+  background:var(--surface);
+  position:relative;
+}
+.exec-phase:first-child{border-radius:10px 0 0 10px}
+.exec-phase:last-child{border-right:1px solid var(--border);border-radius:0 10px 10px 0}
+.ep-badge{
+  font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.18rem .55rem;border-radius:4px;display:inline-block;margin-bottom:.5rem;
+}
+.ep-title{color:var(--text);font-weight:700;font-size:.85rem;margin-bottom:.5rem}
+.ep-items{list-style:none}
+.ep-items li{color:var(--mid);font-size:.76rem;padding:.18rem 0;display:flex;align-items:flex-start;gap:.4rem}
+.ep-items li::before{content:'·';color:var(--teal);flex-shrink:0}
+
+/* ===== ASK BOX ===== */
+.ask-box{
+  background:linear-gradient(135deg,rgba(0,158,130,.06),rgba(30,155,191,.03));
+  border:1.5px solid rgba(0,158,130,.2);
+  border-radius:16px;padding:2rem;
+  position:relative;overflow:hidden;
+}
+.ask-box::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at top right,rgba(0,158,130,.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+.ask-amount{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:3.5rem;color:var(--teal);line-height:1;margin-bottom:.3rem;
+}
+.use-row{
+  display:flex;align-items:center;gap:1rem;padding:.6rem 0;
+  border-bottom:1px solid var(--border);
+}
+.use-bar{
+  flex:1;height:6px;border-radius:3px;
+  background:var(--border);overflow:hidden;
+}
+.use-fill{height:100%;border-radius:3px}
+
+/* slide 1 hero specific */
+.hero-stat-row{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:2rem}
+.hs{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:.9rem 1.2rem;min-width:140px;
+}
+.hs-val{font-family:'Fraunces',serif;font-weight:900;font-size:1.7rem;color:var(--teal);line-height:1}
+.hs-label{font-size:.74rem;color:var(--mid);margin-top:.25rem}
+
+/* RESPONSIVE */
+@media(max-width:800px){
+  .slide-inner{padding:1.5rem 1.2rem 7rem}
+  .g2,.g3,.g4,.g32,.g23{grid-template-columns:1fr}
+  h1.headline{font-size:2rem}
+  h2.section-title{font-size:1.5rem}
+  .journey-track{flex-direction:column}
+  .exec-track{flex-direction:column}
+  .comp-row{grid-template-columns:2fr 1fr 1fr}
+  .comp-row .comp-cell:nth-child(4),.comp-row .comp-cell:nth-child(5){display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ===== SLIDE 1: TITLE / HOOK ===== -->
+<div class="slide bg-dark active" id="slide-0">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="eyebrow" style="margin-top:.5rem">YHealth · America's Health Operating System</div>
+    <h1 class="headline">America Is <span>Sick</span>.<br>The Y Is the Cure.</h1>
+    <p class="lead">6 in 10 Americans live with chronic disease. Healthcare spending tops $5.6T — yet 80% goes to treatment, not prevention. The YMCA reaches 20M members across 2,560 communities. <strong style="color:var(--text)">We are building the operating system that turns the Y into America's most powerful prevention platform.</strong></p>
+    
+    <div class="hero-stat-row">
+      <div class="hs"><div class="hs-val">60%</div><div class="hs-label">Americans with chronic disease</div></div>
+      <div class="hs"><div class="hs-val">$5.6T</div><div class="hs-label">Annual US healthcare spend</div></div>
+      <div class="hs"><div class="hs-val">80%</div><div class="hs-label">Spent on treatment, not prevention</div></div>
+      <div class="hs"><div class="hs-val">20M+</div><div class="hs-label">YMCA members nationwide</div></div>
+      <div class="hs"><div class="hs-val">$92B</div><div class="hs-label">Preventive health market by 2030</div></div>
+    </div>
+
+    <div style="margin-top:2rem;display:flex;gap:.7rem;flex-wrap:wrap">
+      <span class="pill pill-teal">Prevention Platform</span>
+      <span class="pill pill-amber">$92B Market</span>
+      <span class="pill pill-cyan">20M Member Network</span>
+      <span class="pill pill-rose">$5.4M YMCA Operational Budget</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2: WHY YMCA ===== -->
+<div class="slide bg-dark" id="slide-1">
+  <div class="orb orb-1"></div><div class="orb orb-3"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">The Opportunity</div>
+    <h2 class="section-title">The YMCA Is Already <span>America's Health Infrastructure</span></h2>
+    <p class="lead">175 years of community trust. Non-profit mission. 20M members. 2,560 locations. The Y is the only institution with the reach, trust, and physical presence to deliver precision prevention at national scale — it just needs an operating system.</p>
+
+    <div class="g32" style="margin-top:1.8rem">
+      <div>
+        <div class="g2" style="gap:.9rem;margin-bottom:.9rem">
+          <div class="stat-block">
+            <div class="stat-val">2,560</div>
+            <div class="stat-label">YMCA Locations</div>
+            <div class="stat-sub">Every major metro & rural area</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-val">20M+</div>
+            <div class="stat-label">Active Members</div>
+            <div class="stat-sub">Health-motivated, engaged</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-val cyan">175</div>
+            <div class="stat-label">Years of Trust</div>
+            <div class="stat-sub">Unmatched brand credibility</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-val amber">$1B+</div>
+            <div class="stat-label">Annual Membership Revenue</div>
+            <div class="stat-sub">Proven payment infrastructure</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="margin-bottom:1.2rem">
+          <h3 style="color:var(--text);font-weight:700;font-size:1rem;margin-bottom:1rem">Why the Y — and not gyms, hospitals, or apps?</h3>
+          <div class="vp-card" style="margin-bottom:.7rem">
+            <div class="vp-item">
+              <div class="vp-dot" style="background:var(--teal)"></div>
+              <div class="vp-text"><strong style="color:var(--text)">Mission alignment.</strong> Non-profit mandate means data is used for member benefit — not surveillance. Trust is the moat.</div>
+            </div>
+            <div class="vp-item">
+              <div class="vp-dot" style="background:var(--cyan)"></div>
+              <div class="vp-text"><strong style="color:var(--text)">Physical touchpoints.</strong> 2,560 locations = kiosks, staff, classes, and in-person engagement that no app can replicate.</div>
+            </div>
+            <div class="vp-item">
+              <div class="vp-dot" style="background:var(--amber)"></div>
+              <div class="vp-text"><strong style="color:var(--text)">Population diversity.</strong> The Y serves seniors, youth, low-income, chronically ill — the exact populations where prevention matters most.</div>
+            </div>
+            <div class="vp-item">
+              <div class="vp-dot" style="background:var(--rose)"></div>
+              <div class="vp-text"><strong style="color:var(--text)">Existing infrastructure.</strong> Facilities, staff, billing systems, and member relationships already in place. YHealth layers on top — no greenfield build.</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(0,158,130,.07);border:1px solid rgba(0,201,167,.2);border-radius:12px;padding:1rem">
+          <div style="color:var(--teal);font-weight:700;font-size:.85rem;margin-bottom:.35rem">The Gap We're Closing</div>
+          <div style="color:var(--text2);font-size:.82rem;line-height:1.6">The YMCA has the people, the places, and the purpose. What it lacks is the <strong style="color:var(--text)">data infrastructure, AI intelligence, and precision health programs</strong> to turn member visits into measurable health transformation — and revenue.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: WHAT WE'RE BUILDING ===== -->
+<div class="slide bg-teal" id="slide-2">
+  <div class="orb orb-1"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">The Solution</div>
+    <h2 class="section-title">YHealth: A <span>Precision Health OS</span><br>for the YMCA Network</h2>
+    <p class="lead">We are delivering a full-stack health operating system — built on Lifenome's multi-omics AI platform — that plugs into existing YMCA infrastructure and transforms member visits into personalized health journeys with measurable outcomes.</p>
+
+    <div class="g3" style="margin-bottom:1.5rem">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(0,201,167,.15)">🧬</div>
+        <h4>Precision Assessment Engine</h4>
+        <p>VitalAge™ physiological age scans, blood biomarker panels, DNA/genomics, microbiome, and epigenetic clocks — all at the Y.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(56,182,216,.15)">📱</div>
+        <h4>YHealth Member App</h4>
+        <p>Daily biomarker tracking, AI-generated health plans, wearable sync, goal progress dashboards, and personalized program recommendations.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(217,119,6,.08)">🏪</div>
+        <h4>Precision Marketplace</h4>
+        <p>Biomarker-matched supplements, peptides, recovery tools, coaching — only shown to members whose data indicates likely benefit. 20% platform fee.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(220,38,38,.07)">📊</div>
+        <h4>Y Association Dashboard</h4>
+        <p>Real-time member health insights, program performance, revenue tracking, and community health benchmarks for YMCA leadership.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(0,201,167,.15)">🏥</div>
+        <h4>Clinical Integration Layer</h4>
+        <p>HIPAA-compliant data architecture. EHR bi-directional sharing. Insurance carrier risk data. Employer wellness B2B deployments.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(56,182,216,.15)">🔬</div>
+        <h4>National Health Data Asset</h4>
+        <p>Longitudinal multi-omics data from 20M members — the most valuable community health dataset ever assembled. Tiered licensing to pharma, insurance, and researchers.</p>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.4rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+      <div style="font-size:1.5rem">⚙️</div>
+      <div style="flex:1">
+        <div style="color:var(--text);font-weight:700;font-size:.9rem;margin-bottom:.2rem">The Core Deliverable</div>
+        <div style="color:var(--mid);font-size:.82rem">A white-labeled, YMCA-branded precision health platform — powered by Lifenome's AI engine — using existing Y facilities, staff, and member relationships as the distribution and engagement layer.</div>
+      </div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+        <span class="pill pill-teal">80/20 Revenue Split (Lifenome/YHealth)</span>
+        <span class="pill pill-cyan">HIPAA + SOC2</span>
+        <span class="pill pill-amber">Zero Y Upfront Cost</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: MEMBER JOURNEY ===== -->
+<div class="slide bg-mid" id="slide-3">
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Member Experience</div>
+    <h2 class="section-title">The <span>18-Month Journey</span><br>From First Scan to Transformed Health</h2>
+    <p class="lead" style="margin-bottom:1.4rem">Every touchpoint — at the Y, at home, on your wrist — feeds a single intelligence engine that evolves with the member.</p>
+
+    <div class="journey-track" style="margin-bottom:1.2rem">
+      <div class="journey-phase" style="border-top:3px solid var(--cyan)">
+        <div class="jp-label" style="background:rgba(56,182,216,.15);color:var(--cyan)">Month 1–2 · At The Y</div>
+        <div class="jp-title">🚀 On-Boarding</div>
+        <ul class="jp-items">
+          <li>Free VitalAge™ Scan at kiosk</li>
+          <li>Physiological age + 12+ baseline markers</li>
+          <li>16 personalized health goal profiles</li>
+          <li>Subscription tier selection ($10–$50/mo)</li>
+          <li>App download & wearable sync</li>
+        </ul>
+        <div class="jp-arrow"></div>
+      </div>
+      <div class="journey-phase" style="border-top:3px solid var(--teal)">
+        <div class="jp-label" style="background:rgba(0,201,167,.15);color:var(--teal)">Month 3–15 · Everywhere</div>
+        <div class="jp-title">🔄 Continuous Engagement</div>
+        <ul class="jp-items">
+          <li>Daily biomarker tracking via app</li>
+          <li>Wearable sync (Apple Watch, Oura, WHOOP)</li>
+          <li>AI-updated nutrition & fitness plans</li>
+          <li>Specialized health programs (GLP-1, Aging+, etc.)</li>
+          <li>Precision marketplace recommendations</li>
+          <li>Quarterly blood panels (Premium tier)</li>
+        </ul>
+        <div class="jp-arrow"></div>
+      </div>
+      <div class="journey-phase" style="border-top:3px solid var(--amber)">
+        <div class="jp-label" style="background:rgba(217,119,6,.08);color:var(--amber)">Month 12–15 · Deepen</div>
+        <div class="jp-title">⬆️ Enhancement</div>
+        <ul class="jp-items">
+          <li>DNA genomics panel (add-on)</li>
+          <li>Microbiome analysis ($199)</li>
+          <li>Epigenetic age clock ($399)</li>
+          <li>Coaching & therapy matching</li>
+          <li>Advanced program upgrades</li>
+        </ul>
+        <div class="jp-arrow"></div>
+      </div>
+      <div class="journey-phase" style="border-top:3px solid var(--rose)">
+        <div class="jp-label" style="background:rgba(220,38,38,.07);color:var(--rose)">Month 16–18 · Outcomes</div>
+        <div class="jp-title">🏆 Goal Achievement</div>
+        <ul class="jp-items">
+          <li>18-month biomarker outcome verification</li>
+          <li>Achievement badge & celebration</li>
+          <li>Next-chapter goal recommendation</li>
+          <li>Health Maintenance Program option</li>
+          <li>Longitudinal data contribution</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="g3" style="gap:.9rem">
+      <div class="stat-block" style="padding:1rem">
+        <div class="stat-val" style="font-size:1.8rem">Free</div>
+        <div class="stat-label">VitalAge™ Entry Scan</div>
+        <div class="stat-sub">Zero barrier to top of funnel</div>
+      </div>
+      <div class="stat-block" style="padding:1rem">
+        <div class="stat-val" style="font-size:1.8rem">20%</div>
+        <div class="stat-label">Free → Paid Conversion</div>
+        <div class="stat-sub">Target: 5,000 free scans → 1,000 paid subs</div>
+      </div>
+      <div class="stat-block" style="padding:1rem">
+        <div class="stat-val amber" style="font-size:1.8rem">24mo</div>
+        <div class="stat-label">Avg. Member Lifetime</div>
+        <div class="stat-sub">Goal-anchored retention driver</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: VALUE PROPOSITIONS ===== -->
+<div class="slide bg-dark" id="slide-4">
+  <div class="orb orb-1"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Why It Works For Everyone</div>
+    <h2 class="section-title">Value Props for <span>Members, Local Y's & YMCA USA</span></h2>
+    <div class="divider"></div>
+
+    <div class="g3" style="gap:1.2rem">
+      <!-- Members -->
+      <div class="vp-card">
+        <h3><span style="font-size:1.4rem">👤</span> Members</h3>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--teal)"></div>
+          <div class="vp-text">Personalized biological age score — track what actually matters, not just weight on a scale</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--teal)"></div>
+          <div class="vp-text">AI-generated programs tailored to their DNA, blood panel, microbiome, and wearable data</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--teal)"></div>
+          <div class="vp-text">Access to clinical-grade precision health tools previously available only to the wealthy</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--teal)"></div>
+          <div class="vp-text">Products and services that actually match their biology — not generic health advice</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--teal)"></div>
+          <div class="vp-text">Measurable health transformation with 18-month goal verification and accountability</div>
+        </div>
+        <div style="margin-top:1rem">
+          <span class="pill pill-teal" style="font-size:.72rem">Healthier. Longer. Smarter.</span>
+        </div>
+      </div>
+
+      <!-- Local Y -->
+      <div class="vp-card">
+        <h3><span style="font-size:1.4rem">🏢</span> Local YMCA Association</h3>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--cyan)"></div>
+          <div class="vp-text"><strong style="color:var(--text)">40% net revenue share</strong> on subscriptions & marketplace — new revenue stream that didn't exist before</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--cyan)"></div>
+          <div class="vp-text">Demonstrably healthier members → stronger mission outcomes and improved member retention</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--cyan)"></div>
+          <div class="vp-text">Zero upfront technology investment — platform delivered as full turnkey solution</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--cyan)"></div>
+          <div class="vp-text">Competitive differentiation from commercial gyms and wellness chains in local market</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--cyan)"></div>
+          <div class="vp-text">Real-time community health data to guide programming and grant applications</div>
+        </div>
+        <div style="margin-top:1rem">
+          <span class="pill pill-cyan">Mission + Margin</span>
+        </div>
+      </div>
+
+      <!-- YMCA USA -->
+      <div class="vp-card">
+        <h3><span style="font-size:1.4rem">🇺🇸</span> YMCA of the USA</h3>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--amber)"></div>
+          <div class="vp-text">National health data asset — <strong style="color:var(--text)">70% of data licensing revenue</strong> creates a compounding national income stream</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--amber)"></div>
+          <div class="vp-text">Positions YMCA as the definitive prevention partner for CMS, Medicaid, and major insurers</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--amber)"></div>
+          <div class="vp-text">Direct access to 20M+ health-motivated members for pharma trial recruitment and population research</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--amber)"></div>
+          <div class="vp-text">80 billion longitudinal data points by Year 5 — no competitor or institution can replicate this dataset</div>
+        </div>
+        <div class="vp-item">
+          <div class="vp-dot" style="background:var(--amber)"></div>
+          <div class="vp-text">National revenue to reinvest in under-resourced communities and expand mission reach</div>
+        </div>
+        <div style="margin-top:1rem">
+          <span class="pill pill-amber">The Most Valuable Health Dataset in America</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: REVENUE STREAMS ===== -->
+<div class="slide bg-dark" id="slide-5">
+  <div class="orb orb-3"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Business Model</div>
+    <h2 class="section-title">Four <span>Revenue Streams</span>.<br>All Compounding.</h2>
+    <p class="lead" style="margin-bottom:1.5rem">Every member generates multiple revenue layers simultaneously — subscription, marketplace, data licensing, and SaaS — with each compounding as the network grows.</p>
+
+    <div style="margin-bottom:1.2rem">
+      <div class="rev-row">
+        <div class="rev-icon" style="background:rgba(0,158,130,.08)">📱</div>
+        <div class="rev-label">
+          <strong>Member Subscriptions (Y+ Tiers)</strong>
+          <span>$10/mo Basic → $20/mo Pro → $30/mo Premium → $50/mo Bundle · On top of existing Y membership</span>
+          <div class="rev-split-bar" style="margin-top:.45rem">
+            <div class="rsb-seg" style="width:40%;background:var(--teal)" title="YHealth 40%"></div>
+            <div class="rsb-seg" style="width:40%;background:var(--cyan)" title="Local Y 40%"></div>
+            <div class="rsb-seg" style="width:20%;background:#cbd5e1" title="Lifenome 20%"></div>
+          </div>
+          <div style="font-size:.68rem;color:var(--mid);margin-top:.2rem">Split: 80% → YHealth (incl. local Y distributions) · 20% → Lifenome</div>
+        </div>
+        <div class="rev-val">$10–50<span style="font-size:.7rem;color:var(--mid)">/mo</span></div>
+      </div>
+
+      <div class="rev-row">
+        <div class="rev-icon" style="background:rgba(217,119,6,.07)">🛒</div>
+        <div class="rev-label">
+          <strong>Precision Marketplace</strong>
+          <span>Supplements, peptides, wearables, coaching — 20% platform fee on all transactions · Avg. basket $150+/mo</span>
+          <div class="rev-split-bar" style="margin-top:.45rem">
+            <div class="rsb-seg" style="width:40%;background:var(--teal)"></div>
+            <div class="rsb-seg" style="width:40%;background:var(--cyan)"></div>
+            <div class="rsb-seg" style="width:20%;background:#cbd5e1"></div>
+          </div>
+          <div style="font-size:.68rem;color:var(--mid);margin-top:.2rem">Same 80/20 split on net marketplace platform fee</div>
+        </div>
+        <div class="rev-val">20%<span style="font-size:.7rem;color:var(--mid)"> GMV fee</span></div>
+      </div>
+
+      <div class="rev-row">
+        <div class="rev-icon" style="background:rgba(56,182,216,.12)">🧬</div>
+        <div class="rev-label">
+          <strong>Data Licensing (T1/T2/T3)</strong>
+          <span>T1 Behavioral: $5/user/yr · T2 Biomarker: $70/user/yr · T3 Multi-omics: $400/user/yr</span>
+          <div class="rev-split-bar" style="margin-top:.45rem">
+            <div class="rsb-seg" style="width:70%;background:var(--teal)"></div>
+            <div class="rsb-seg" style="width:30%;background:#cbd5e1"></div>
+          </div>
+          <div style="font-size:.68rem;color:var(--mid);margin-top:.2rem">Split: 70% YHealth · 30% Lifenome</div>
+        </div>
+        <div class="rev-val amber">$5–400<span style="font-size:.7rem;color:var(--mid)">/user/yr</span></div>
+      </div>
+
+      <div class="rev-row">
+        <div class="rev-icon" style="background:rgba(220,38,38,.06)">🏢</div>
+        <div class="rev-label">
+          <strong>SaaS Platform License + B2B</strong>
+          <span>$1,000/Y/mo white-label SaaS · Employer wellness $25–100/employee/yr · Insurance carrier data $500K–$5M/yr</span>
+        </div>
+        <div class="rev-val" style="color:var(--rose)">$12K<span style="font-size:.7rem;color:var(--mid)">/Y/yr</span></div>
+      </div>
+    </div>
+
+    <div class="g3" style="gap:.9rem">
+      <div class="stat-block" style="padding:1rem">
+        <div class="stat-val" style="font-size:1.6rem">$61M</div>
+        <div class="stat-label">Avg. YHealth ARR (5-Year)</div>
+        <div class="stat-sub">Across all revenue streams</div>
+      </div>
+      <div class="stat-block" style="padding:1rem">
+        <div class="stat-val cyan" style="font-size:1.6rem">$400</div>
+        <div class="stat-label">Max Data Value / Member / Yr</div>
+        <div class="stat-sub">T3 multi-omics licensed profile</div>
+      </div>
+      <div class="stat-block" style="padding:1rem">
+        <div class="stat-val amber" style="font-size:1.6rem">$8B</div>
+        <div class="stat-label">Total Addressable Data Revenue</div>
+        <div class="stat-sub">At full 20M member penetration</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: FINANCIAL MODEL ===== -->
+<div class="slide bg-mid" id="slide-6">
+  <div class="orb orb-1"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">5-Year Projections</div>
+    <h2 class="section-title"><span>Financial Model</span>:<br>National Expansion Path</h2>
+    <p class="lead" style="margin-bottom:1.2rem">Starting with 8 pilot YMCAs across 2+ metro markets (Atlanta + San Diego), scaling to 512 locations by Year 3 — then full national deployment. 80% YHealth / 20% Lifenome on net subscriptions & marketplace; 70/30 on data licensing.</p>
+
+    <div style="overflow-x:auto;margin-bottom:1.5rem">
+      <table class="fin-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th><span class="yr-badge">Y1 Pilot</span></th>
+            <th><span class="yr-badge">Y2</span></th>
+            <th><span class="yr-badge">Y3</span></th>
+            <th><span class="yr-badge">Y4</span></th>
+            <th><span class="yr-badge">Y5</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>YMCA Locations</td>
+            <td>8 (Pilot)</td><td>50</td><td>512</td><td>1,280</td><td>2,560</td>
+          </tr>
+          <tr>
+            <td>Paid Subscribers</td>
+            <td>~12K</td><td>~150K</td><td>300K</td><td>750K</td><td>1.5M</td>
+          </tr>
+          <tr>
+            <td>Subscription Revenue</td>
+            <td>$0.3M</td><td>$3.6M</td><td>$37M</td><td>$92M</td><td>$185M</td>
+          </tr>
+          <tr>
+            <td>Marketplace GMV</td>
+            <td>$0.2M</td><td>$1.5M</td><td>$15M</td><td>$38M</td><td>$77M</td>
+          </tr>
+          <tr>
+            <td>Data Licensing Revenue</td>
+            <td>$0.1M</td><td>$0.8M</td><td>$12M</td><td>$48M</td><td>$120M+</td>
+          </tr>
+          <tr class="highlight">
+            <td>Gross Revenue</td>
+            <td>$1M+</td><td>$7.3M</td><td>$73M</td><td>$175M</td><td>$350M</td>
+          </tr>
+          <tr>
+            <td>YHealth Net Share (80% of net)</td>
+            <td>$400K</td><td>$3.4M</td><td>$43M</td><td>$105M</td><td>$210M</td>
+          </tr>
+          <tr class="ebitda-row">
+            <td>YHealth EBITDA</td>
+            <td style="color:rgba(232,68,90,.7)">$(1.2M)</td><td style="color:rgba(232,68,90,.7)">$(0.3M)</td><td>$18M+</td><td>$65M+</td><td>$140M+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="g4" style="gap:.9rem">
+      <div class="stat-block" style="padding:.9rem">
+        <div class="stat-val" style="font-size:1.5rem">Y3</div>
+        <div class="stat-label">EBITDA Positive</div>
+        <div class="stat-sub">At 512 locations, 256K members</div>
+      </div>
+      <div class="stat-block" style="padding:.9rem">
+        <div class="stat-val cyan" style="font-size:1.5rem">$61M</div>
+        <div class="stat-label">5-Year Avg ARR</div>
+        <div class="stat-sub">YHealth gross revenue</div>
+      </div>
+      <div class="stat-block" style="padding:.9rem">
+        <div class="stat-val amber" style="font-size:1.5rem">20%</div>
+        <div class="stat-label">Target Conversion Rate</div>
+        <div class="stat-sub">Free scan → paid subscriber</div>
+      </div>
+      <div class="stat-block" style="padding:.9rem">
+        <div class="stat-val" style="font-size:1.5rem;color:var(--rose)">3×</div>
+        <div class="stat-label">Stress Test Validated</div>
+        <div class="stat-sub">EBITDA+ at 15% conv, no data rev</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: ORG STRUCTURE ===== -->
+<div class="slide bg-dark" id="slide-7">
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Organizational Design</div>
+    <h2 class="section-title">YHealth <span>Organizational Structure</span></h2>
+    <p class="lead" style="margin-bottom:1.5rem">A dual-entity model: a non-profit (YESS Health) to steward data governance and member trust, plus a commercial LLC (OpCo) to power white-label expansion and investor returns.</p>
+
+    <!-- Org Chart -->
+    <div style="text-align:center;margin-bottom:1.8rem">
+      <div class="org-level">
+        <div class="org-box" style="border-color:rgba(245,166,35,.4);background:rgba(217,119,6,.05);min-width:200px">
+          <div style="color:var(--amber);font-weight:800;font-size:.9rem">YMCA of the USA</div>
+          <div style="color:var(--mid);font-size:.73rem;margin-top:.2rem">Strategic Endorsement & Governance</div>
+        </div>
+      </div>
+      <div class="org-connector"><div class="org-line-v"></div></div>
+      <div class="org-level">
+        <div class="org-box" style="border-color:rgba(0,201,167,.4);background:rgba(0,158,130,.07);min-width:220px">
+          <div style="color:var(--teal);font-weight:800;font-size:.9rem">YESS Health (Non-Profit)</div>
+          <div style="color:var(--mid);font-size:.73rem;margin-top:.2rem">Data governance · Mission · Y partnerships</div>
+        </div>
+      </div>
+      <div class="org-connector"><div style="display:flex;gap:3rem;justify-content:center"><div class="org-line-v"></div><div class="org-line-v"></div></div></div>
+      <div class="org-level">
+        <div class="org-box" style="border-color:rgba(56,182,216,.35);background:rgba(30,155,191,.05);min-width:190px">
+          <div style="color:var(--cyan);font-weight:800;font-size:.9rem">YHealth (Commercial LLC)</div>
+          <div style="color:var(--mid);font-size:.73rem;margin-top:.2rem">Subscriptions · Marketplace · SaaS</div>
+        </div>
+        <div class="org-box" style="border-color:rgba(212,168,67,.3);background:rgba(212,168,67,.05);min-width:190px">
+          <div style="color:var(--gold);font-weight:800;font-size:.9rem">Lifenome (Technology Partner)</div>
+          <div style="color:var(--mid);font-size:.73rem;margin-top:.2rem">AI platform · Genomics · API engine</div>
+        </div>
+      </div>
+      <div class="org-connector"><div style="display:flex;gap:3rem;justify-content:center"><div class="org-line-v" style="height:28px"></div></div></div>
+      <div class="org-level" style="flex-wrap:wrap;gap:.7rem">
+        <div class="org-box" style="border-color:var(--border);background:var(--surface);min-width:140px;font-size:.8rem">
+          <div style="color:var(--text2);font-weight:700">Local YMCA #1</div>
+          <div style="color:var(--mid);font-size:.7rem">Atlanta, GA</div>
+        </div>
+        <div class="org-box" style="border-color:var(--border);background:var(--surface);min-width:140px;font-size:.8rem">
+          <div style="color:var(--text2);font-weight:700">Local YMCA #2</div>
+          <div style="color:var(--mid);font-size:.7rem">San Diego, CA</div>
+        </div>
+        <div class="org-box" style="border-color:var(--border);background:var(--surface);min-width:140px;font-size:.8rem;opacity:.55">
+          <div style="color:var(--text2);font-weight:700">+ 50 Ys Year 2</div>
+          <div style="color:#94a3b8;font-size:.7rem">National Rollout</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="g3" style="gap:1rem">
+      <div class="feat-card" style="padding:1rem">
+        <h4 style="color:var(--teal);margin-bottom:.4rem">YESS Health (Non-Profit)</h4>
+        <p>Owns member data rights. Governs consent. Distributes 40% of net revenue back to local Y associations. Represents mission alignment to regulators and grant bodies.</p>
+      </div>
+      <div class="feat-card" style="padding:1rem">
+        <h4 style="color:var(--cyan);margin-bottom:.4rem">YHealth Commercial (LLC)</h4>
+        <p>Holds investor equity. Operates subscriptions, marketplace, SaaS licensing, and B2B commercial contracts. White-label OpCo for health systems and employers.</p>
+      </div>
+      <div class="feat-card" style="padding:1rem">
+        <h4 style="color:var(--gold);margin-bottom:.4rem">Lifenome Technology</h4>
+        <p>Provides AI platform, multi-omics engine, app development, kiosk software, and data infrastructure. Holds <strong>20% equity in YHealth LLC</strong> (YMCA USA 80%). Receives platform fee ($50K/mo → $100K/mo) credited against quarterly rev share; permanent 20% of subscription/marketplace net + 30% of data licensing — rights survive any termination.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 9: LEADERSHIP TEAM ===== -->
+<div class="slide bg-teal" id="slide-8">
+  <div class="orb orb-1"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Leadership Team</div>
+    <h2 class="section-title">The Team <span>Built to Deliver This</span></h2>
+    <p class="lead" style="margin-bottom:1.5rem">Three leaders at the intersection of YMCA institutional authority, health technology, and AI-driven precision medicine — each uniquely positioned for this mission.</p>
+
+    <div style="display:flex;flex-direction:column;gap:1.1rem">
+      <div class="team-card">
+        <div class="team-avatar">GW</div>
+        <div class="team-info" style="flex:1">
+          <h4>Dr. Gloria Winters</h4>
+          <div class="team-role">Executive Lead · YMCA Partnership & Mission</div>
+          <div class="team-bio">Senior YMCA executive with decades of leadership across health programming, community impact, and organizational development within the Y movement. Deep institutional relationships with YMCA of the USA and local association CEOs — the internal champion needed to navigate the network and drive adoption at scale. Dr. Winters brings the credibility and trust that no outside partner can manufacture.</div>
+          <div style="margin-top:.7rem;display:flex;gap:.5rem">
+            <span class="pill pill-teal">YMCA Network</span>
+            <span class="pill pill-cyan">Community Health</span>
+            <span class="pill pill-amber">Institutional Leadership</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--navy2))">SP</div>
+        <div class="team-info" style="flex:1">
+          <h4>Stephen Powell</h4>
+          <div class="team-role">Chief Executive · Business Development & Operations</div>
+          <div class="team-bio">Experienced executive with a track record in health and wellness business development, strategic partnerships, and operational scaling. Brings the commercial acumen to convert the YHealth platform from a compelling concept into a revenue-generating enterprise — managing partner agreements, investor relations, and go-to-market execution across the Y network.</div>
+          <div style="margin-top:.7rem;display:flex;gap:.5rem">
+            <span class="pill pill-cyan">Business Development</span>
+            <span class="pill pill-teal">Strategy & Operations</span>
+            <span class="pill pill-amber">Health & Wellness</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,var(--amber),var(--rose))">AM</div>
+        <div class="team-info" style="flex:1">
+          <h4>Ali Mostashari, PhD</h4>
+          <div class="team-role">Chief Science & Technology Officer · Lifenome CEO</div>
+          <div class="team-bio">Complexity scientist and precision health entrepreneur. PhD (MIT-affiliated), top-20 most cited scholar in complexity science, World Economic Forum Global Futures Council member. CEO of Lifenome — a precision health and genomics platform with 600,000+ users across 14 countries and $2M+ in revenue. Architect of the multi-omics AI engine powering YHealth, with 213 disease PGS, 249 health indices, and patented smartphone imaging technology.</div>
+          <div style="margin-top:.7rem;display:flex;gap:.5rem">
+            <span class="pill pill-amber">Genomics AI · PhD MIT</span>
+            <span class="pill pill-teal">Lifenome CEO</span>
+            <span class="pill pill-rose">WEF Global Futures Council</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 10: WHY LIFENOME ===== -->
+<div class="slide bg-dark" id="slide-9">
+  <div class="orb orb-1"></div><div class="orb orb-3"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Technology Partner</div>
+    <h2 class="section-title">Why <span>Lifenome</span>:<br>No Comparable Platform Exists</h2>
+    <p class="lead" style="margin-bottom:1.2rem">Lifenome is not a biomarker app. It is the only multi-omics intelligence infrastructure built for enterprise white-label deployment — at a fundamentally different abstraction level from every competitor.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.4rem">
+      <div class="comp-row">
+        <div class="comp-cell">Capability</div>
+        <div class="comp-cell" style="color:var(--teal);font-weight:800">◆ LIFENOME</div>
+        <div class="comp-cell">InsideTracker</div>
+        <div class="comp-cell">Function Health</div>
+        <div class="comp-cell">ChatGPT / LLM</div>
+      </div>
+      <div class="comp-row lifenome-col">
+        <div class="comp-cell" style="color:var(--text2)">Unique Biomarkers</div>
+        <div class="comp-cell comp-check" style="background:rgba(0,158,130,.06);border-left:2px solid rgba(0,201,167,.3)"><strong style="color:var(--teal)">5,168</strong></div>
+        <div class="comp-cell" style="color:var(--mid)">48</div>
+        <div class="comp-cell" style="color:var(--mid)">160+</div>
+        <div class="comp-cell comp-no">—</div>
+      </div>
+      <div class="comp-row lifenome-col">
+        <div class="comp-cell" style="color:var(--text2)">Health Indices</div>
+        <div class="comp-cell" style="background:rgba(0,158,130,.06);border-left:2px solid rgba(0,201,167,.3)"><strong style="color:var(--teal)">249</strong></div>
+        <div class="comp-cell" style="color:var(--mid)">10</div>
+        <div class="comp-cell comp-no">None</div>
+        <div class="comp-cell comp-no">None</div>
+      </div>
+      <div class="comp-row lifenome-col">
+        <div class="comp-cell" style="color:var(--text2)">DNA / PGS (Disease + Wellbeing + PGx)</div>
+        <div class="comp-cell" style="background:rgba(0,158,130,.06);border-left:2px solid rgba(0,201,167,.3)"><strong style="color:var(--teal)">213+184+193</strong></div>
+        <div class="comp-cell" style="color:var(--mid)">38 traits</div>
+        <div class="comp-cell comp-no">None</div>
+        <div class="comp-cell comp-no">None</div>
+      </div>
+      <div class="comp-row lifenome-col">
+        <div class="comp-cell" style="color:var(--text2)">Epigenetic Clocks</div>
+        <div class="comp-cell" style="background:rgba(0,158,130,.06);border-left:2px solid rgba(0,201,167,.3)"><strong style="color:var(--teal)">4 clocks + 850K CpG</strong></div>
+        <div class="comp-cell comp-no">None</div>
+        <div class="comp-cell comp-no">None</div>
+        <div class="comp-cell comp-no">None</div>
+      </div>
+      <div class="comp-row lifenome-col">
+        <div class="comp-cell" style="color:var(--text2)">Smartphone Imaging (Patented)</div>
+        <div class="comp-cell" style="background:rgba(0,158,130,.06);border-left:2px solid rgba(0,201,167,.3)"><strong style="color:var(--teal)">✓ Patented</strong></div>
+        <div class="comp-cell comp-no">None</div>
+        <div class="comp-cell" style="color:var(--mid)">MRI/CT ($499)</div>
+        <div class="comp-cell comp-no">None</div>
+      </div>
+      <div class="comp-row lifenome-col">
+        <div class="comp-cell" style="color:var(--text2)">White-Label B2B API</div>
+        <div class="comp-cell" style="background:rgba(0,158,130,.06);border-left:2px solid rgba(0,201,167,.3)"><strong style="color:var(--teal)">✓ Built for Enterprise</strong></div>
+        <div class="comp-cell comp-no">Consumer only</div>
+        <div class="comp-cell comp-no">Consumer only</div>
+        <div class="comp-cell comp-partial">API, no analytics</div>
+      </div>
+      <div class="comp-row lifenome-col">
+        <div class="comp-cell" style="color:var(--text2)">HIPAA + SOC2</div>
+        <div class="comp-cell" style="background:rgba(0,158,130,.06);border-left:2px solid rgba(0,201,167,.3)"><strong style="color:var(--teal)">✓ Both</strong></div>
+        <div class="comp-cell comp-check">✓</div>
+        <div class="comp-check comp-cell">✓</div>
+        <div class="comp-cell comp-no">✗</div>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(0,201,167,.1),rgba(56,182,216,.05));border:1px solid rgba(0,201,167,.2);border-radius:12px;padding:1rem 1.4rem">
+      <div style="color:var(--teal);font-weight:700;margin-bottom:.3rem;font-size:.9rem">The Bottom Line</div>
+      <div style="color:var(--text2);font-size:.83rem;line-height:1.6">Lifenome is not competing with InsideTracker or Function Health. It is the <strong style="color:var(--text)">intelligence infrastructure layer</strong> that enables the YMCA — and any health platform — to build multi-omics AI analytics. With 5,168 biomarkers, 249 health indices, 9 data source types, and a white-label API, Lifenome operates at a fundamentally different level. <em style="color:var(--mid)">The comparison isn't "better biomarker coverage" — it's platform intelligence vs. point solutions.</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 11: EXECUTION PLAN ===== -->
+<div class="slide bg-mid" id="slide-10">
+  <div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Roadmap</div>
+    <h2 class="section-title">26-Week <span>Execution Plan</span><br>Pilot to Launch</h2>
+    <p class="lead" style="margin-bottom:1.4rem">From platform development kickoff to live member scans — every workstream, milestone, and owner mapped across six months.</p>
+
+    <div class="exec-track" style="margin-bottom:1.4rem">
+      <div class="exec-phase">
+        <div class="ep-badge" style="background:rgba(56,182,216,.15);color:var(--cyan)">Weeks 1–4</div>
+        <div class="ep-title">Architecture & Legal</div>
+        <ul class="ep-items">
+          <li>Platform architecture design</li>
+          <li>API specification & data model</li>
+          <li>HIPAA BAA execution</li>
+          <li>YMCA association agreements</li>
+          <li>Y-USA governance sign-off</li>
+        </ul>
+      </div>
+      <div class="exec-phase">
+        <div class="ep-badge" style="background:rgba(0,158,130,.08);color:var(--teal)">Weeks 5–14</div>
+        <div class="ep-title">Platform Build</div>
+        <ul class="ep-items">
+          <li>iOS/Android app core build</li>
+          <li>Kiosk software + AI engine v1</li>
+          <li>Daxko/TractionRec integrations</li>
+          <li>Lab API integrations</li>
+          <li>Marketplace partner APIs</li>
+        </ul>
+      </div>
+      <div class="exec-phase">
+        <div class="ep-badge" style="background:rgba(217,119,6,.08);color:var(--amber)">Weeks 15–18</div>
+        <div class="ep-title">QA & Compliance</div>
+        <ul class="ep-items">
+          <li>Full regression testing</li>
+          <li>Load & security audit</li>
+          <li>Staff training program</li>
+          <li>UX review with Y teams</li>
+          <li>Beta testing at pilot sites</li>
+        </ul>
+      </div>
+      <div class="exec-phase">
+        <div class="ep-badge" style="background:rgba(220,38,38,.07);color:var(--rose)">Weeks 19–22</div>
+        <div class="ep-title">Pilot Deployment</div>
+        <ul class="ep-items">
+          <li>Kiosk install at Atlanta + SD</li>
+          <li>Member communications launch</li>
+          <li>In-facility marketing</li>
+          <li>Group scan day events</li>
+          <li>Real-time monitoring</li>
+        </ul>
+      </div>
+      <div class="exec-phase">
+        <div class="ep-badge" style="background:rgba(212,168,67,.1);color:var(--gold)">Weeks 23–26</div>
+        <div class="ep-title">Optimize & Scale</div>
+        <ul class="ep-items">
+          <li>Funnel A/B optimization</li>
+          <li>AI model feedback loop</li>
+          <li>Pilot outcome report</li>
+          <li>Series A preparation</li>
+          <li>50+ Y expansion pipeline</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="g4" style="gap:.9rem">
+      <div class="stat-block" style="padding:.9rem;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:.3rem">🎯</div>
+        <div style="color:var(--text);font-weight:700;font-size:.85rem">Gate Metric #1</div>
+        <div style="color:var(--teal);font-size:.78rem;margin-top:.2rem">5,000 free scans across 2 pilots</div>
+      </div>
+      <div class="stat-block" style="padding:.9rem;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:.3rem">💳</div>
+        <div style="color:var(--text);font-weight:700;font-size:.85rem">Gate Metric #2</div>
+        <div style="color:var(--teal);font-size:.78rem;margin-top:.2rem">≥20% conversion → 1,000 paid subs</div>
+      </div>
+      <div class="stat-block" style="padding:.9rem;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:.3rem">⭐</div>
+        <div style="color:var(--text);font-weight:700;font-size:.85rem">Gate Metric #3</div>
+        <div style="color:var(--teal);font-size:.78rem;margin-top:.2rem">Net Promoter Score > 50</div>
+      </div>
+      <div class="stat-block" style="padding:.9rem;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:.3rem">💰</div>
+        <div style="color:var(--text);font-weight:700;font-size:.85rem">Gate Metric #4</div>
+        <div style="color:var(--teal);font-size:.78rem;margin-top:.2rem">$1M+ pilot ARR → triggers Series A</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12: THE ASK ===== -->
+<div class="slide bg-dark" id="slide-11">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div>
+  <div class="slide-inner">
+    <div class="eyebrow">Investment Opportunity</div>
+    <h2 class="section-title">The <span>Ask</span>: $5.4M YMCA Operational Budget</h2>
+    <p class="lead" style="margin-bottom:1.5rem">To build, pilot, and validate the platform that makes every YMCA a preventive health destination — and establish the data asset that will define community health for a generation.</p>
+
+    <div class="g32">
+      <div>
+        <div class="ask-box" style="margin-bottom:1.2rem">
+          <div class="ask-amount">$5.4M</div>
+          <div style="color:var(--mid);font-size:.85rem;margin-bottom:1.3rem">18-Month YMCA Operational Budget · Funded via SPV · Guaranteed by YMCA USA ($300K/mo)</div>
+
+          <div class="use-row">
+            <div style="color:var(--text2);font-size:.82rem;min-width:200px"><strong style="color:var(--text)">Platform Fee to Lifenome</strong><br><span style="color:var(--mid);font-size:.76rem">$50K/mo (M1–6) → $100K/mo (M7+) · credited against rev share</span></div>
+            <div class="use-bar"><div class="use-fill" style="width:28%;background:var(--teal)"></div></div>
+            <div style="color:var(--teal);font-weight:700;font-size:.88rem;min-width:60px;text-align:right">$1.5M</div>
+          </div>
+          <div class="use-row">
+            <div style="color:var(--text2);font-size:.82rem;min-width:200px"><strong style="color:var(--text)">Staff & Operations</strong><br><span style="color:var(--mid);font-size:.76rem">YHealth + field team (18 months)</span></div>
+            <div class="use-bar"><div class="use-fill" style="width:26%;background:var(--cyan)"></div></div>
+            <div style="color:var(--cyan);font-weight:700;font-size:.88rem;min-width:60px;text-align:right">$1.4M</div>
+          </div>
+          <div class="use-row">
+            <div style="color:var(--text2);font-size:.82rem;min-width:200px"><strong style="color:var(--text)">Marketing & Member Activation</strong><br><span style="color:var(--mid);font-size:.76rem">Pilot + national awareness campaigns</span></div>
+            <div class="use-bar"><div class="use-fill" style="width:22%;background:var(--amber)"></div></div>
+            <div style="color:var(--amber);font-weight:700;font-size:.88rem;min-width:60px;text-align:right">$1.2M</div>
+          </div>
+          <div class="use-row">
+            <div style="color:var(--text2);font-size:.82rem;min-width:200px"><strong style="color:var(--text)">Kiosks & Hardware (8 Pilots)</strong><br><span style="color:var(--mid);font-size:.76rem">iPad kiosk deployment across 8 locations</span></div>
+            <div class="use-bar"><div class="use-fill" style="width:11%;background:var(--rose)"></div></div>
+            <div style="color:var(--rose);font-weight:700;font-size:.88rem;min-width:60px;text-align:right">$600K</div>
+          </div>
+          <div class="use-row" style="border-bottom:none">
+            <div style="color:var(--text2);font-size:.82rem;min-width:200px"><strong style="color:var(--text)">G&A, Legal & Contingency</strong><br><span style="color:var(--mid);font-size:.76rem">Entity setup, compliance, reserves</span></div>
+            <div class="use-bar"><div class="use-fill" style="width:13%;background:var(--mid)"></div></div>
+            <div style="color:var(--mid);font-weight:700;font-size:.88rem;min-width:60px;text-align:right">$700K</div>
+          </div>
+          <div style="margin-top:.6rem;padding:.5rem .6rem;background:rgba(0,158,130,.06);border-radius:8px;font-size:.76rem;color:var(--mid);">
+            <strong style="color:var(--teal)">Note:</strong> Lifenome funds the $2.4M platform build separately at its own risk — recovered via platform fee + revenue share.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="margin-bottom:1.2rem">
+          <h3 style="color:var(--text);font-weight:700;font-size:1rem;margin-bottom:.9rem">What Investors Get</h3>
+          <div class="vp-item">
+            <div class="vp-dot" style="background:var(--teal)"></div>
+            <div class="vp-text"><strong style="color:var(--text)">First-mover position</strong> in a $92B market with an institutional partner (YMCA) that no competitor can replicate</div>
+          </div>
+          <div class="vp-item">
+            <div class="vp-dot" style="background:var(--cyan)"></div>
+            <div class="vp-text"><strong style="color:var(--text)">Path to Series A</strong> fully de-risked by 6-month pilot with clear validation metrics before expansion capital required</div>
+          </div>
+          <div class="vp-item">
+            <div class="vp-dot" style="background:var(--amber)"></div>
+            <div class="vp-text"><strong style="color:var(--text)">Data asset moat</strong> — longitudinal multi-omics data from 20M community members compounds in value each year</div>
+          </div>
+          <div class="vp-item">
+            <div class="vp-dot" style="background:var(--rose)"></div>
+            <div class="vp-text"><strong style="color:var(--text)">Multiple exit paths</strong>: strategic acquisition by health insurer, pharma, or major wellness platform seeking community data scale</div>
+          </div>
+          <div class="vp-item" style="border-bottom:none">
+            <div class="vp-dot" style="background:var(--teal)"></div>
+            <div class="vp-text"><strong style="color:var(--text)">$61M avg ARR</strong> over 5-year national expansion with EBITDA positive by Year 3</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(0,158,130,.06);border:1px solid rgba(0,201,167,.2);border-radius:12px;padding:1rem">
+          <div style="color:var(--teal);font-weight:700;font-size:.88rem;margin-bottom:.4rem">Series A Trigger Events</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <span class="pill pill-teal">5,000 Free Scans</span>
+            <span class="pill pill-cyan">20% Conversion</span>
+            <span class="pill pill-amber">NPS > 50</span>
+            <span class="pill pill-rose">$1M+ Pilot ARR</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.5rem;display:flex;align-items:center;gap:1.5rem">
+      <div style="font-size:2rem">🇺🇸</div>
+      <div style="flex:1">
+        <div style="color:var(--text);font-weight:700;margin-bottom:.2rem">The Mission Behind the Model</div>
+        <div style="color:var(--mid);font-size:.83rem">YHealth is not another wellness app. It is a national infrastructure project — using the YMCA's 175 years of community trust to democratize precision health and build the most valuable population health dataset in American history. The financial returns and the mission outcomes are one and the same.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- NAV BAR -->
+<div class="nav-bar">
+  <div class="nav-dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <div class="slide-counter" id="counter">1 / 12</div>
+    <div class="nav-btns">
+      <button class="nav-btn nb-prev" id="btnPrev" onclick="go(-1)" disabled>← Back</button>
+      <button class="nav-btn nb-next" id="btnNext" onclick="go(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SLIDE_TITLES = [
+  "Introduction",
+  "Why YMCA",
+  "What We're Building",
+  "Member Journey",
+  "Value Propositions",
+  "Revenue Streams",
+  "Financial Model",
+  "Org Structure",
+  "Leadership Team",
+  "Why Lifenome",
+  "Execution Plan",
+  "The Ask"
+];
+
+const slides = document.querySelectorAll('.slide');
+const dotsEl = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const btnPrev = document.getElementById('btnPrev');
+const btnNext = document.getElementById('btnNext');
+let cur = 0;
+const total = slides.length;
+
+// Build dots
+SLIDE_TITLES.forEach((t, i) => {
+  const d = document.createElement('div');
+  d.className = 'nd' + (i === 0 ? ' on' : '');
+  d.title = t;
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+
+function goTo(n) {
+  if (n < 0 || n >= total) return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('exit-left');
+  setTimeout(() => slides[cur < n ? cur : cur].classList.remove('exit-left'), 600);
+  cur = n;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.nd').forEach((d, i) => d.classList.toggle('on', i === cur));
+  counter.textContent = `${cur + 1} / ${total}`;
+  btnPrev.disabled = cur === 0;
+  btnNext.disabled = cur === total - 1;
+  btnNext.textContent = cur === total - 1 ? '✓ End' : 'Next →';
+}
+
+function go(dir) { goTo(cur + dir); }
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1);
+});
+
+// Touch swipe
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 50) go(dx > 0 ? 1 : -1);
+});
+</script>
+</body>
+</html>
