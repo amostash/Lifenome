@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LifeNome — Investment Deck 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a1628;--teal:#00b4a0;--tl2:#00d4bc;--sky:#1a9abf;
+  --slate:#6b7a8d;--line:#e2e8f0;--white:#ffffff;
+  --gold:#b8852a;--amber:#d4941e;--violet:#6d3fa0;--rose:#c0344a;--green:#1a9a6a;
+  --fd:'Cormorant Garamond',serif;--fb:'Outfit',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:#ffffff;color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* ── NAV ── */
+#topnav{position:fixed;top:0;left:0;right:0;z-index:300;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 12px rgba(10,22,40,.07)}
+.nav-inner{max-width:1300px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;height:64px;gap:1.2rem}
+.logo-wrap{display:flex;align-items:center;gap:.8rem;flex-shrink:0;cursor:pointer;padding:.3rem 0}
+.logo-img{width:48px;height:48px;border-radius:10px;object-fit:cover}
+.logo-name{font-family:var(--fd);font-size:1.55rem;font-weight:700;color:var(--ink);letter-spacing:.01em}
+.logo-name span{color:var(--teal)}
+
+/* desktop tabs — hidden on mobile */
+.nav-tabs{display:flex;gap:.05rem;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:.3rem .6rem;border-radius:6px;border:none;background:transparent;color:var(--slate);font-family:var(--fb);font-size:.67rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .18s;letter-spacing:.05em;text-transform:uppercase}
+.ntab.active{background:var(--teal);color:#fff}
+.ntab:hover:not(.active){background:#f0faf9;color:var(--teal)}
+
+/* hamburger */
+#hamBtn{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;border-radius:8px;border:1.5px solid var(--line);background:#fff;cursor:pointer;flex-shrink:0;margin-left:auto;transition:background .2s}
+#hamBtn:hover{background:#f0faf9}
+#hamBtn span{display:block;width:18px;height:2px;background:var(--ink);border-radius:2px;transition:all .22s}
+#hamBtn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#hamBtn.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+#hamBtn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* dropdown menu */
+#hamMenu{display:none;position:fixed;top:64px;right:0;width:240px;background:#fff;border:1px solid var(--line);border-radius:0 0 0 14px;box-shadow:-4px 8px 28px rgba(10,22,40,.12);z-index:299;max-height:calc(100vh - 64px);overflow-y:auto}
+#hamMenu.open{display:block}
+.hm-item{display:flex;align-items:center;gap:.7rem;padding:.75rem 1.2rem;cursor:pointer;border-bottom:1px solid var(--line);font-size:.8rem;font-weight:600;color:var(--ink);transition:background .15s}
+.hm-item:hover{background:#f0faf9;color:var(--teal)}
+.hm-item.mactive{background:#e8faf8;color:var(--teal)}
+.hm-num{width:22px;height:22px;border-radius:5px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;color:var(--slate)}
+.hm-item.mactive .hm-num{background:var(--teal);color:#fff}
+
+@media(max-width:900px){.nav-tabs{display:none}#hamBtn{display:flex}}
+
+/* ── PAGES ── */
+/* KEY FIX: all pages hidden by default using display:none; active overrides to display:block */
+.page{display:none;margin-top:64px;min-height:calc(100vh - 64px);padding:3.5rem 2rem 5rem;background:#fff}
+.page.active{display:block}
+
+/* Cover is special: when active it uses flex */
+#page-0{padding:0}
+#page-0.active{display:flex;align-items:center;background:linear-gradient(135deg,#0a1628 0%,#0d1f3c 55%,#0a2a35 100%)}
+
+.inner{max-width:1200px;margin:0 auto}
+
+/* ── TYPOGRAPHY ── */
+.slide-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);margin-bottom:.6rem}
+.slide-h1{font-family:var(--fd);font-size:3.2rem;font-weight:700;line-height:1.1;color:var(--ink);margin-bottom:.5rem}
+.slide-h1 em{font-style:italic;color:var(--teal)}
+.slide-sub{color:var(--slate);font-size:1rem;line-height:1.6;max-width:640px;margin-bottom:2.5rem}
+.slide-h3{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--ink);margin-bottom:.6rem}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:16px;padding:1.6rem;box-shadow:0 2px 20px rgba(10,22,40,.06);border:1px solid var(--line)}
+.card-dark{background:var(--ink);border-radius:16px;padding:1.6rem;color:#fff}
+.card-teal{background:linear-gradient(135deg,#00b4a0,#1a9abf);border-radius:16px;padding:1.6rem;color:#fff}
+.card-soft{background:#f7fafd;border-radius:16px;padding:1.6rem;border:1px solid var(--line)}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:800px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.mb1{margin-bottom:.9rem}.mb2{margin-bottom:1.8rem}
+
+/* ── STATS ── */
+.stat-num{font-family:var(--fd);font-size:3rem;font-weight:700;line-height:1;color:var(--ink)}
+.stat-num.teal{color:var(--teal)}
+.stat-num.gold{color:var(--gold)}
+.stat-num.green{color:var(--green)}
+.stat-label{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-top:.3rem}
+.stat-sub{font-size:.78rem;color:var(--slate);margin-top:.2rem}
+
+/* ── COVER ── */
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none}
+.orb1{width:520px;height:520px;background:radial-gradient(circle,rgba(0,180,160,.18) 0%,transparent 70%);top:-160px;right:-80px}
+.orb2{width:360px;height:360px;background:radial-gradient(circle,rgba(26,154,191,.13) 0%,transparent 70%);bottom:-80px;left:38%}
+.orb3{width:220px;height:220px;background:radial-gradient(circle,rgba(200,151,58,.1) 0%,transparent 70%);top:38%;right:18%}
+.hero-inner{position:relative;z-index:2;padding:5rem 2rem;max-width:1200px;margin:0 auto;width:100%}
+.hero-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--teal)}
+.hero-h1{font-family:var(--fd);font-size:5rem;font-weight:700;line-height:1.03;color:#fff;margin-bottom:1rem}
+.hero-h1 em{font-style:italic;color:var(--teal)}
+.hero-p{color:rgba(255,255,255,.62);font-size:1.05rem;line-height:1.75;max-width:560px;margin-bottom:2.2rem}
+.hero-divider{width:64px;height:3px;background:linear-gradient(to right,var(--teal),transparent);margin-bottom:2.2rem}
+.hero-tags{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:3rem}
+.htag{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:30px;padding:.38rem 1rem;color:rgba(255,255,255,.82);font-size:.78rem;font-weight:500}
+@media(max-width:700px){.hero-h1{font-size:3rem}}
+
+/* ── SCENARIO TOGGLE ── */
+.scenario-bar{display:flex;background:var(--ink);border-radius:40px;padding:.3rem;gap:.2rem;width:fit-content;margin-bottom:2rem}
+.sc-btn{padding:.55rem 1.4rem;border-radius:30px;border:none;font-family:var(--fb);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .25s;color:rgba(255,255,255,.5);background:transparent}
+.sc-btn.active{background:var(--teal);color:#fff;box-shadow:0 2px 12px rgba(0,180,160,.4)}
+.sc-btn.cons.active{background:#c0344a}
+.sc-btn.opt.active{background:var(--green)}
+
+/* ── CHARTS ── */
+.chart-box{position:relative;height:280px}
+.chart-box canvas{max-height:280px!important}
+
+/* ── MISC ── */
+.inv-row{display:flex;align-items:center;justify-content:space-between;padding:.8rem 0;border-bottom:1px solid var(--line)}
+.inv-row:last-child{border-bottom:none}
+.inv-label{font-size:.85rem;color:var(--slate);font-weight:500}
+.inv-val{font-size:.95rem;font-weight:700;color:var(--ink)}
+.spend-seg{height:48px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#fff}
+.team-card{background:#fff;border-radius:14px;padding:1.3rem;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}
+.team-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(10,22,40,.09)}
+.team-role{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:.3rem}
+.team-name{font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:.4rem}
+.team-bio{font-size:.78rem;color:var(--slate);line-height:1.55}
+.adv-card{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.3rem;background:#fff;border-radius:12px;border:1px solid var(--line)}
+.adv-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.adv-title{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.25rem}
+.adv-desc{font-size:.77rem;color:var(--slate);line-height:1.5}
+.val-card{background:linear-gradient(135deg,var(--ink) 0%,#0e2a45 100%);border-radius:20px;padding:2rem;color:#fff;position:relative;overflow:hidden}
+.val-card::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(0,180,160,.18) 0%,transparent 70%);border-radius:50%}
+.val-yr{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4);margin-bottom:.3rem}
+.val-num{font-family:var(--fd);font-size:3.2rem;font-weight:700;color:var(--teal);line-height:1}
+.val-sub{font-size:.83rem;color:rgba(255,255,255,.45);margin-top:.4rem}
+.val-return{background:rgba(0,180,160,.12);border:1px solid rgba(0,180,160,.25);border-radius:8px;padding:.5rem .9rem;display:inline-block;margin-top:.8rem;font-size:.8rem;font-weight:700;color:var(--tl2)}
+.partner-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.partner-chip{padding:.38rem .9rem;border-radius:8px;background:#f7fafd;border:1px solid var(--line);font-size:.77rem;font-weight:700;color:var(--ink)}
+.tl-item{display:flex;gap:1rem;margin-bottom:1.2rem}
+.tl-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;flex-shrink:0;margin-top:2px}
+.tl-title{font-weight:700;font-size:.9rem;margin-bottom:.2rem;color:var(--ink)}
+.tl-desc{font-size:.78rem;color:var(--slate);line-height:1.5}
+.divider{height:1px;background:var(--line);margin:1.4rem 0}
+.comp-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.comp-table th{padding:.7rem .9rem;text-align:left;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--slate);border-bottom:2px solid var(--line)}
+.comp-table td{padding:.65rem .9rem;border-bottom:1px solid var(--line)}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table .hl{background:#f7fafd}
+.badge-ln{background:var(--teal);color:#fff;padding:2px 8px;border-radius:20px;font-size:.68rem;font-weight:700}
+.badge-no{background:#fef0f2;color:var(--rose);padding:2px 7px;border-radius:20px;font-size:.68rem;font-weight:700}
+.badge-part{background:#fef9ec;color:var(--gold);padding:2px 7px;border-radius:20px;font-size:.68rem;font-weight:700}
+.watermark{font-size:.7rem;color:#bcc8d4;text-align:center;padding:1.5rem 0;letter-spacing:.08em;text-transform:uppercase}
+
+/* ── BOTTOM NAV ── */
+#footnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:200;padding:.65rem 2rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 -2px 16px rgba(10,22,40,.05)}
+.fnav-btn{padding:.45rem 1.3rem;border-radius:8px;border:1.5px solid var(--line);font-family:var(--fb);font-size:.78rem;font-weight:600;cursor:pointer;background:#fff;color:var(--ink);transition:all .2s}
+.fnav-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.fnav-btn:disabled{opacity:.3;cursor:default}
+.fnav-dots{display:flex;gap:.4rem;align-items:center}
+.fdot{width:7px;height:7px;border-radius:3.5px;background:var(--line);cursor:pointer;transition:all .2s}
+.fdot.active{width:22px;background:var(--teal)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="topnav">
+  <div class="nav-inner">
+    <div class="logo-wrap" onclick="setPage(0)">
+      <img src="data:image/jpeg;base64,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" class="logo-img" alt="LifeNome"/>
+      <span class="logo-name">Life<span>Nome</span></span>
+    </div>
+    <div class="nav-tabs" id="navTabs"></div>
+    <!-- Hamburger -->
+    <button id="hamBtn" onclick="toggleHam()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div id="hamMenu"></div>
+</nav>
+
+<!-- ════════════════════ PAGE 0: COVER ════════════════════════════════════════ -->
+<div class="page active" id="page-0">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Series A · SAFE Offering · Q2 2026</div>
+    <h1 class="hero-h1">World's Premier<br><em>Precision Longevity OS™</em></h1>
+    <div class="hero-divider"></div>
+    <p class="hero-p">The intelligence infrastructure powering the global longevity economy — from genomics to gut microbiome, wearables to biological age. The "Intel Inside" of precision health.</p>
+    <div class="hero-tags">
+      <span class="htag">600K+ Users · 14 Countries</span>
+      <span class="htag">B2B(2C) Platform</span>
+      <span class="htag">YMCA Strategic Partnership</span>
+      <span class="htag">Profitable · Acquisition-Ready</span>
+    </div>
+    <button onclick="setPage(1)" style="background:var(--teal);color:#fff;border:none;border-radius:10px;padding:.8rem 2rem;font-size:.92rem;font-weight:700;font-family:var(--fb);cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(0,180,160,.35)">View Investment Case →</button>
+    <div style="margin-top:1.4rem;font-size:.73rem;color:rgba(255,255,255,.3);letter-spacing:.06em">CONFIDENTIAL — For Qualified Investors Only</div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 1: INVESTMENT ═══════════════════════════════════ -->
+<div class="page" id="page-1">
+  <div class="inner">
+    <div class="slide-eyebrow">Investment Opportunity</div>
+    <h1 class="slide-h1">The <em>Offer</em></h1>
+    <p class="slide-sub">A $2.5M SAFE at a $47.5M post-money valuation cap — investing at a critical inflection point before the YHealth YMCA partnership begins generating revenue.</p>
+    <div class="g2 mb2">
+      <div class="val-card">
+        <div class="val-yr">SAFE Terms</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:.8rem">
+          <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.38);margin-bottom:.3rem">Raise Amount</div><div style="font-family:var(--fd);font-size:2.6rem;font-weight:700;color:var(--teal)">$2.5M</div></div>
+          <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.38);margin-bottom:.3rem">Valuation Cap</div><div style="font-family:var(--fd);font-size:2.6rem;font-weight:700;color:#e8a832">$47.5M</div></div>
+          <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.38);margin-bottom:.3rem">Instrument</div><div style="font-size:1.1rem;font-weight:700;color:#fff">SAFE Note</div></div>
+          <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.38);margin-bottom:.3rem">Discount</div><div style="font-size:1.1rem;font-weight:700;color:#fff">20% CAP</div></div>
+        </div>
+        <div class="val-return">Entry before YHealth revenue activation</div>
+      </div>
+      <div class="card">
+        <div class="slide-h3">Use of Proceeds</div>
+        <p style="font-size:.8rem;color:var(--slate);margin-bottom:1.2rem">$2.5M deployed across three focused areas</p>
+        <div style="display:flex;border-radius:10px;overflow:hidden;margin-bottom:1.3rem">
+          <div class="spend-seg" style="width:60%;background:linear-gradient(90deg,var(--teal),#1a9abf)">60% Platform</div>
+          <div class="spend-seg" style="width:25%;background:linear-gradient(90deg,var(--violet),#8b5cf6)">25% Hires</div>
+          <div class="spend-seg" style="width:15%;background:linear-gradient(90deg,var(--gold),var(--amber))">15% BD</div>
+        </div>
+        <div>
+          <div class="inv-row"><div><div class="inv-label">🖥️ Client Platform Development</div><div style="font-size:.73rem;color:var(--slate)">YHealth kiosk, white-label apps, API expansion</div></div><div class="inv-val" style="color:var(--teal)">$1.5M</div></div>
+          <div class="inv-row"><div><div class="inv-label">👥 New Hires</div><div style="font-size:.73rem;color:var(--slate)">Engineering, data science, customer success</div></div><div class="inv-val" style="color:var(--violet)">$625K</div></div>
+          <div class="inv-row"><div><div class="inv-label">🤝 Business Development</div><div style="font-size:.73rem;color:var(--slate)">YHealth launch, partner pipeline, M&amp;A positioning</div></div><div class="inv-val" style="color:var(--gold)">$375K</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-soft" style="border-left:4px solid var(--teal)">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:space-between">
+        <div><div class="slide-h3" style="margin-bottom:.2rem">Why Now?</div><p style="font-size:.83rem;color:var(--slate);max-width:560px">LifeNome is at peak inflection: profitable operations, signed YMCA partnership pending platform build, 5-year revenue path to $13M–$128M (2030). This SAFE captures entry before the YHealth revenue flywheel activates.</p></div>
+        <div style="display:flex;gap:1.3rem;flex-shrink:0;flex-wrap:wrap">
+          <div style="text-align:center"><div style="font-family:var(--fd);font-size:1.9rem;font-weight:700;color:var(--teal)">18mo</div><div style="font-size:.7rem;color:var(--slate);text-transform:uppercase;letter-spacing:.06em">To Acquisition Ready</div></div>
+          <div style="text-align:center"><div style="font-family:var(--fd);font-size:1.9rem;font-weight:700;color:var(--gold)">12×</div><div style="font-size:.7rem;color:var(--slate);text-transform:uppercase;letter-spacing:.06em">Revenue Multiple</div></div>
+          <div style="text-align:center"><div style="font-family:var(--fd);font-size:1.9rem;font-weight:700;color:var(--violet)">3–27×</div><div style="font-size:.7rem;color:var(--slate);text-transform:uppercase;letter-spacing:.06em">Projected Return (2030)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 2: MARKET ══════════════════════════════════════ -->
+<div class="page" id="page-2">
+  <div class="inner">
+    <div class="slide-eyebrow">Market Opportunity</div>
+    <h1 class="slide-h1">A <em>$62B</em> Market at Inflection</h1>
+    <p class="slide-sub">Three macro tailwinds are converging to create the largest consumer health opportunity since genomics.</p>
+    <div class="g3 mb2">
+      <div class="card"><div style="font-size:1.6rem;margin-bottom:.8rem">📈</div><div class="slide-h3">Aging Population</div><div class="stat-num teal" style="font-size:2.4rem">$62B</div><div class="stat-label">Longevity market by 2029</div><div class="divider"></div><p style="font-size:.8rem;color:var(--slate);line-height:1.6">34% of Americans are 50+ and the majority will manage chronic disease post-65. Prevention is the only scalable answer.</p></div>
+      <div class="card"><div style="font-size:1.6rem;margin-bottom:.8rem">🧬</div><div class="slide-h3">Personalization Wave</div><div class="stat-num teal" style="font-size:2.4rem">270%</div><div class="stat-label">Adherence lift: personalized vs. generic</div><div class="divider"></div><p style="font-size:.8rem;color:var(--slate);line-height:1.6">57% of US consumers will share biological data for personalized health. Precision beats generic 3:1 on outcomes.</p></div>
+      <div class="card"><div style="font-size:1.6rem;margin-bottom:.8rem">💰</div><div class="slide-h3">Industry Boom</div><div class="stat-num teal" style="font-size:2.4rem">$4.4B</div><div class="stat-label">PE/VC deployed into longevity</div><div class="divider"></div><p style="font-size:.8rem;color:var(--slate);line-height:1.6">2,000+ longevity companies. 870% growth in longevity biomarkers 2020–24. Science is outpacing commercial platforms — creating LifeNome's opportunity.</p></div>
+    </div>
+    <div class="card-dark">
+      <div class="slide-h3" style="color:#fff;margin-bottom:1.2rem">The Problem LifeNome Solves for B2B Clients</div>
+      <div class="g3">
+        <div style="text-align:center;padding:.8rem"><div style="font-family:var(--fd);font-size:2.8rem;font-weight:700;color:#e8a832">15.2mo</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.45);margin-top:.3rem">Avg time to market for precision health MVP</div></div>
+        <div style="text-align:center;padding:.8rem;border-left:1px solid rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.1)"><div style="font-family:var(--fd);font-size:2.8rem;font-weight:700;color:#c0344a">$3.2M+</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.45);margin-top:.3rem">Avg cost of precision health MVP</div></div>
+        <div style="text-align:center;padding:.8rem"><div style="font-family:var(--fd);font-size:2.8rem;font-weight:700;color:var(--teal)">100+</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.45);margin-top:.3rem">New longevity papers published monthly</div></div>
+      </div>
+      <div style="text-align:center;margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.1)"><span style="color:var(--tl2);font-weight:700;font-size:.88rem">LifeNome delivers: &lt;90 days to market · as low as $50K MVP · 1,000+ biomarkers always current</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 3: PLATFORM ════════════════════════════════════ -->
+<div class="page" id="page-3">
+  <div class="inner">
+    <div class="slide-eyebrow">Platform</div>
+    <h1 class="slide-h1">The <em>Longevity OS™</em></h1>
+    <p class="slide-sub">The "Intel Inside" of precision health — an end-to-end intelligence platform that enterprise partners embed to power their precision health products in weeks, not years.</p>
+    <div style="display:flex;gap:.7rem;overflow-x:auto;padding-bottom:.5rem;margin-bottom:2rem;scrollbar-width:none">
+      <div class="card" style="min-width:172px;flex-shrink:0;text-align:center;border-top:3px solid var(--teal)"><div style="font-size:1.4rem;margin-bottom:.5rem">🧫</div><div style="font-weight:700;font-size:.85rem;margin-bottom:.4rem">Testing</div><div style="font-size:.73rem;color:var(--slate);line-height:1.5">DNA · Microbiome · Methylation · Blood · Proteomics</div></div>
+      <div style="font-size:1.5rem;color:var(--teal);align-self:center;flex-shrink:0">→</div>
+      <div class="card" style="min-width:172px;flex-shrink:0;text-align:center;border-top:3px solid var(--sky)"><div style="font-size:1.4rem;margin-bottom:.5rem">🔬</div><div style="font-weight:700;font-size:.85rem;margin-bottom:.4rem">Diagnostics</div><div style="font-size:.73rem;color:var(--slate);line-height:1.5">800+ multi-omics reports · 1,000+ API insights · 53 verticals</div></div>
+      <div style="font-size:1.5rem;color:var(--teal);align-self:center;flex-shrink:0">→</div>
+      <div class="card" style="min-width:172px;flex-shrink:0;text-align:center;border-top:3px solid var(--violet)"><div style="font-size:1.4rem;margin-bottom:.5rem">🧠</div><div style="font-weight:700;font-size:.85rem;margin-bottom:.4rem">Recommendations</div><div style="font-size:.73rem;color:var(--slate);line-height:1.5">Supplements · Nutrition · Programs · Treatments</div></div>
+      <div style="font-size:1.5rem;color:var(--teal);align-self:center;flex-shrink:0">→</div>
+      <div class="card" style="min-width:172px;flex-shrink:0;text-align:center;border-top:3px solid var(--gold)"><div style="font-size:1.4rem;margin-bottom:.5rem">📱</div><div style="font-weight:700;font-size:.85rem;margin-bottom:.4rem">Engagement</div><div style="font-size:.73rem;color:var(--slate);line-height:1.5">White-label apps · SDKs · Longevity · Women's Health · Weight</div></div>
+      <div style="font-size:1.5rem;color:var(--teal);align-self:center;flex-shrink:0">→</div>
+      <div class="card" style="min-width:172px;flex-shrink:0;text-align:center;border-top:3px solid var(--green)"><div style="font-size:1.4rem;margin-bottom:.5rem">🩺</div><div style="font-weight:700;font-size:.85rem;margin-bottom:.4rem">Coaching</div><div style="font-size:.73rem;color:var(--slate);line-height:1.5">Multi-omics certified physicians · RDs · Trainers</div></div>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="slide-h3 mb1">Platform Metrics</div>
+        <div class="g2" style="gap:.8rem">
+          <div class="card" style="text-align:center"><div class="stat-num teal" style="font-size:2.2rem">5,168</div><div class="stat-label">Unique Biomarkers</div></div>
+          <div class="card" style="text-align:center"><div class="stat-num" style="font-size:2.2rem;color:var(--violet)">249</div><div class="stat-label">Health Indices</div></div>
+          <div class="card" style="text-align:center"><div class="stat-num" style="font-size:2.2rem;color:var(--gold)">14</div><div class="stat-label">Health Verticals</div></div>
+          <div class="card" style="text-align:center"><div class="stat-num" style="font-size:2.2rem;color:var(--green)">9</div><div class="stat-label">Data Source Types</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="slide-h3 mb1">8 Platform Exclusives</div>
+        <div style="display:flex;flex-direction:column;gap:.5rem">
+          <div class="adv-card"><div class="adv-icon" style="background:#e8faf8">🧬</div><div><div class="adv-title">5-Modal Biological Age</div><div class="adv-desc">Blood + epigenetic clocks + imaging + physiological + actuarial — the only cross-validated platform</div></div></div>
+          <div class="adv-card"><div class="adv-icon" style="background:#f3eefb">📐</div><div><div class="adv-title">Nonlinear Biomarker Interactions</div><div class="adv-desc">ML engine models cross-domain risk amplification invisible to linear analysis</div></div></div>
+          <div class="adv-card"><div class="adv-icon" style="background:#fdf6e8">📸</div><div><div class="adv-title">Patented Smartphone Imaging</div><div class="adv-desc">Facial age, body composition, grip strength — no lab required, no competitor equivalent</div></div></div>
+          <div class="adv-card"><div class="adv-icon" style="background:#eaf7f1">🏢</div><div><div class="adv-title">White-Label B2B API</div><div class="adv-desc">Only platform built for enterprise deployment — all competitors are consumer-only</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 4: TRACTION ════════════════════════════════════ -->
+<div class="page" id="page-4">
+  <div class="inner">
+    <div class="slide-eyebrow">Traction</div>
+    <h1 class="slide-h1">Profitable. Proven. <em>Global.</em></h1>
+    <p class="slide-sub">Product-market fit established across 4 enterprise segments in 14 countries. Cash-flow positive with a $40M+ pipeline.</p>
+    <div class="g4 mb2">
+      <div class="card" style="text-align:center;border-top:3px solid var(--teal)"><div class="stat-num teal">600K+</div><div class="stat-label">End-Users Served</div><div class="stat-sub">Across 14 countries</div></div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--gold)"><div class="stat-num gold">$2M+</div><div class="stat-label">2025 Revenue</div><div class="stat-sub">90% ARR</div></div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--green)"><div class="stat-num green">40%</div><div class="stat-label">EBITDA Margin</div><div class="stat-sub">Cash-flow positive</div></div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--violet)"><div class="stat-num" style="color:var(--violet)">20+</div><div class="stat-label">Enterprise Clients</div><div class="stat-sub">Multi-year agreements</div></div>
+    </div>
+    <div class="g2 mb2">
+      <div class="card">
+        <div class="slide-h3">Key Partners &amp; Clients</div>
+        <div style="margin-bottom:1rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-bottom:.4rem">Longevity Enterprises</div><div class="partner-row"><span class="partner-chip">LG Electronics</span><span class="partner-chip">Genetria</span><span class="partner-chip">Forté</span><span class="partner-chip">Healthspan Digital</span><span class="partner-chip">Zurich</span></div></div>
+        <div style="margin-bottom:1rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-bottom:.4rem">Precision Health &amp; Genomics</div><div class="partner-row"><span class="partner-chip">Emirati Genome (M42)</span><span class="partner-chip">Vitel Health</span><span class="partner-chip">Pathomics</span><span class="partner-chip">Asia Genomics</span></div></div>
+        <div style="margin-bottom:1rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-bottom:.4rem">Nutrition, Fitness &amp; Wellness</div><div class="partner-row"><span class="partner-chip">PepsiCo</span><span class="partner-chip">Campbell's</span><span class="partner-chip">GNC</span><span class="partner-chip">AWA Nutrition</span></div></div>
+        <div><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-bottom:.4rem">Consumer Health &amp; Beauty</div><div class="partner-row"><span class="partner-chip">Allergan</span><span class="partner-chip">Biologique Recherche</span><span class="partner-chip">Happy Head</span><span class="partner-chip">Science Humans</span></div></div>
+      </div>
+      <div>
+        <div class="card mb1">
+          <div class="slide-h3">Pipeline Highlights</div>
+          <div>
+            <div class="inv-row"><div><div style="font-weight:700;font-size:.85rem">YHealth / YMCA</div><div class="stat-sub">National network · precision health platform</div></div><div class="inv-val" style="color:var(--teal)">$40M+ by 2028</div></div>
+            <div class="inv-row"><div><div style="font-weight:700;font-size:.85rem">Syndesis Health</div><div class="stat-sub">$3B+ data co · 40M patient records</div></div><div class="inv-val" style="color:var(--gold)">$10M+ by 2028</div></div>
+            <div class="inv-row"><div><div style="font-weight:700;font-size:.85rem">Recap Foods / FuelMeals</div><div class="stat-sub">Precision nutrition · athlete meal delivery</div></div><div class="inv-val" style="color:var(--violet)">$10M+ by 2028</div></div>
+            <div class="inv-row"><div><div style="font-weight:700;font-size:.85rem">4 LatAM JVs</div><div class="stat-sub">Genetria, Optimo Life, Mexico + Brazil</div></div><div class="inv-val" style="color:var(--green)">Active</div></div>
+          </div>
+        </div>
+        <div class="card-soft" style="border:1px solid rgba(0,180,160,.2)"><div style="display:flex;align-items:center;gap:.8rem"><div style="font-size:1.8rem">🏆</div><div><div style="font-weight:800;font-size:.88rem">CB Insights "Outperformer"</div><div style="font-size:.75rem;color:var(--slate)">Named among top 15 precision health companies globally</div></div></div></div>
+      </div>
+    </div>
+    <div class="card-dark">
+      <div class="slide-h3" style="color:#fff;margin-bottom:1rem">Pipeline: $40M+ Risk-Weighted, 5-Year Horizon</div>
+      <div class="g3">
+        <div style="text-align:center"><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700;color:var(--teal)">$20M+</div><div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin-top:.2rem">Closed Contract Value</div></div>
+        <div style="text-align:center;border-left:1px solid rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.1)"><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700;color:#e8a832">$40M+</div><div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin-top:.2rem">Risk-Weighted Opportunity Pipeline</div></div>
+        <div style="text-align:center"><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700;color:var(--violet)">15–20×</div><div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin-top:.2rem">Revenue Growth Potential, 5 Years</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 5: YHEALTH ══════════════════════════════════════ -->
+<div class="page" id="page-5">
+  <div class="inner">
+    <div class="slide-eyebrow">Strategic Catalyst</div>
+    <h1 class="slide-h1">YHealth × YMCA: <em>Transformational</em></h1>
+    <p class="slide-sub">A national precision health deployment across the YMCA's 2,560-location network — the largest community health infrastructure in America. LifeNome is the platform builder and permanent revenue share partner.</p>
+    <div class="g2 mb2">
+      <div class="card-teal">
+        <div class="slide-h3" style="color:#fff;margin-bottom:1rem">YMCA Network Scale</div>
+        <div class="g2" style="gap:.8rem">
+          <div><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700">2,560</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.75;margin-top:.2rem">Locations</div></div>
+          <div><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700">20M+</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.75;margin-top:.2rem">Members</div></div>
+          <div><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700">77%</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.75;margin-top:.2rem">US Coverage</div></div>
+          <div><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700">175yr</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.75;margin-top:.2rem">Brand Trust</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="slide-h3">LifeNome's Deal Structure</div>
+        <div>
+          <div class="inv-row"><div class="inv-label">LifeNome Founding Equity in YHealth LLC</div><div class="inv-val" style="color:var(--teal)">20%</div></div>
+          <div class="inv-row"><div class="inv-label">Platform Fee (post-launch, monthly)</div><div class="inv-val">$50K → $100K/mo</div></div>
+          <div class="inv-row"><div class="inv-label">Subscription + Marketplace Revenue Share</div><div class="inv-val">20% net</div></div>
+          <div class="inv-row"><div class="inv-label">Data Licensing Revenue Share</div><div class="inv-val" style="color:var(--gold)">30% gross</div></div>
+          <div class="inv-row"><div class="inv-label">White-Label Licensing Revenue Share</div><div class="inv-val" style="color:var(--violet)">50% gross</div></div>
+          <div class="inv-row"><div class="inv-label">Platform Build Investment (LifeNome funds)</div><div class="inv-val" style="color:var(--rose)">$2.4M</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="slide-h3 mb1">Revenue Streams — YHealth Platform (5 Sources)</div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:130px;background:#e8faf8;border:1px solid rgba(0,180,160,.2);border-radius:10px;padding:.9rem;text-align:center"><div style="font-size:1.2rem">💳</div><div style="font-weight:700;font-size:.82rem;margin:.3rem 0">Subscriptions</div><div style="font-size:.72rem;color:var(--slate)">$19–$39/mo member tiers</div><div style="font-size:.75rem;font-weight:700;color:var(--teal);margin-top:.3rem">20% to LN</div></div>
+        <div style="flex:1;min-width:130px;background:#eaf7f1;border:1px solid rgba(26,154,95,.2);border-radius:10px;padding:.9rem;text-align:center"><div style="font-size:1.2rem">🛍️</div><div style="font-weight:700;font-size:.82rem;margin:.3rem 0">Marketplace</div><div style="font-size:.72rem;color:var(--slate)">Supplements, programs, coaching</div><div style="font-size:.75rem;font-weight:700;color:var(--green);margin-top:.3rem">20% to LN</div></div>
+        <div style="flex:1;min-width:130px;background:#fdf6e8;border:1px solid rgba(200,151,58,.2);border-radius:10px;padding:.9rem;text-align:center"><div style="font-size:1.2rem">📊</div><div style="font-weight:700;font-size:.82rem;margin:.3rem 0">Data Licensing</div><div style="font-size:.72rem;color:var(--slate)">Pharma, insurers, researchers</div><div style="font-size:.75rem;font-weight:700;color:var(--gold);margin-top:.3rem">30% to LN</div></div>
+        <div style="flex:1;min-width:130px;background:#f3eefb;border:1px solid rgba(109,63,160,.2);border-radius:10px;padding:.9rem;text-align:center"><div style="font-size:1.2rem">🏢</div><div style="font-weight:700;font-size:.82rem;margin:.3rem 0">White-Label</div><div style="font-size:.72rem;color:var(--slate)">Health systems, employers, MedSpas</div><div style="font-size:.75rem;font-weight:700;color:var(--violet);margin-top:.3rem">50% to LN</div></div>
+        <div style="flex:1;min-width:130px;background:#e8f4f9;border:1px solid rgba(26,154,191,.2);border-radius:10px;padding:.9rem;text-align:center"><div style="font-size:1.2rem">🏥</div><div style="font-weight:700;font-size:.82rem;margin:.3rem 0">PMPM Insurance</div><div style="font-size:.72rem;color:var(--slate)">Medicare Advantage, carriers</div><div style="font-size:.75rem;font-weight:700;color:var(--sky);margin-top:.3rem">20% to LN</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 6: FINANCIALS ══════════════════════════════════ -->
+<div class="page" id="page-6">
+  <div class="inner">
+    <div class="slide-eyebrow">Financial Projections</div>
+    <h1 class="slide-h1">Revenue to <em>2030</em></h1>
+    <p class="slide-sub">LifeNome standalone revenue ($2.8M in 2026) plus 1.6× YHealth platform revenue share. Three scenarios based on YHealth member ramp velocity.</p>
+    <div class="scenario-bar mb2">
+      <button class="sc-btn cons" id="sc-cons" onclick="setScenario('conservative')">Conservative</button>
+      <button class="sc-btn active" id="sc-real" onclick="setScenario('realistic')">Realistic</button>
+      <button class="sc-btn opt" id="sc-opt" onclick="setScenario('optimistic')">Optimistic</button>
+    </div>
+    <div class="card-soft mb2" id="scDesc" style="border-left:4px solid var(--teal)">
+      <div style="font-weight:700;margin-bottom:.3rem;color:var(--ink)" id="scTitle">Realistic Scenario</div>
+      <div style="font-size:.83rem;color:var(--slate)" id="scText">YHealth reaches 2.5M members by 2030 · 9% basic / 3% premium conversion · 22% annual churn · 8 white-label partners at $4M ACV · $18/user data licensing</div>
+    </div>
+    <div class="g2 mb2">
+      <div class="card"><div style="font-weight:700;margin-bottom:1rem;font-size:.88rem;color:var(--ink)">LifeNome Revenue 2026–2030 ($M)</div><div class="chart-box"><canvas id="revenueChart"></canvas></div></div>
+      <div class="card"><div style="font-weight:700;margin-bottom:1rem;font-size:.88rem;color:var(--ink)">2030 Revenue by Stream</div><div class="chart-box"><canvas id="streamChart"></canvas></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-bottom:1.8rem" id="yearCards"></div>
+    <div class="card-dark">
+      <div class="slide-h3" style="color:#fff;margin-bottom:.3rem">2030 Valuation at 12× Revenue</div>
+      <p style="font-size:.8rem;color:rgba(255,255,255,.45);margin-bottom:1.2rem">Estimated return multiples based on $2.5M SAFE at $47.5M post-money cap</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+        <div style="background:rgba(192,52,74,.1);border:1px solid rgba(192,52,74,.2);border-radius:12px;padding:1.1rem;text-align:center"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(192,52,74,.8);margin-bottom:.4rem">Conservative</div><div style="font-family:var(--fd);font-size:2.4rem;font-weight:700;color:#e05068">$161M</div><div style="font-size:.73rem;color:rgba(255,255,255,.4);margin-top:.3rem">Revenue: $13.4M · 1M members · ~3.4×</div></div>
+        <div style="background:rgba(0,180,160,.1);border:1px solid rgba(0,180,160,.25);border-radius:12px;padding:1.1rem;text-align:center"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(0,212,188,.8);margin-bottom:.4rem">Realistic</div><div style="font-family:var(--fd);font-size:2.4rem;font-weight:700;color:var(--tl2)">$596M</div><div style="font-size:.73rem;color:rgba(255,255,255,.4);margin-top:.3rem">Revenue: $49.7M · 2.5M members · ~12.5×</div></div>
+        <div style="background:rgba(26,154,95,.1);border:1px solid rgba(26,154,95,.25);border-radius:12px;padding:1.1rem;text-align:center"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(0,220,140,.8);margin-bottom:.4rem">Optimistic</div><div style="font-family:var(--fd);font-size:2.4rem;font-weight:700;color:#4ade80">$1.53B</div><div style="font-size:.73rem;color:rgba(255,255,255,.4);margin-top:.3rem">Revenue: $127.8M · 4.5M members · ~32×</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 7: COMPETITIVE ═════════════════════════════════ -->
+<div class="page" id="page-7">
+  <div class="inner">
+    <div class="slide-eyebrow">Competitive Moat</div>
+    <h1 class="slide-h1">Platform vs. <em>Point Solutions</em></h1>
+    <p class="slide-sub">LifeNome is not competing with InsideTracker or Function Health for consumer bloodwork. LifeNome is the intelligence infrastructure that enables those platforms — and any health company — to build multi-omics AI analytics.</p>
+    <div class="card mb2" style="overflow-x:auto">
+      <table class="comp-table">
+        <thead><tr><th>Capability</th><th><span class="badge-ln">LifeNome</span></th><th>InsideTracker</th><th>Function Health</th><th>ChatGPT/LLM</th></tr></thead>
+        <tbody>
+          <tr class="hl"><td>Blood Biomarker Analysis</td><td style="color:var(--teal);font-weight:700">229 markers + ML interactions</td><td>48 markers</td><td>160+ markers</td><td>Text only</td></tr>
+          <tr><td>DNA / Polygenic Risk Scores</td><td style="color:var(--teal);font-weight:700">213 disease + 184 wellbeing + 193 PGx</td><td>261 SNPs, 38 traits</td><td><span class="badge-no">None</span></td><td><span class="badge-no">None</span></td></tr>
+          <tr class="hl"><td>Epigenetic / Methylation Clocks</td><td style="color:var(--teal);font-weight:700">4 clocks + 850K CpG sites</td><td><span class="badge-no">N/A</span></td><td><span class="badge-no">N/A</span></td><td><span class="badge-no">N/A</span></td></tr>
+          <tr><td>Microbiome Analysis</td><td style="color:var(--teal);font-weight:700">86 taxa + diversity + pathways</td><td><span class="badge-no">N/A</span></td><td><span class="badge-no">N/A</span></td><td><span class="badge-no">N/A</span></td></tr>
+          <tr class="hl"><td>Smartphone Camera Imaging</td><td style="color:var(--teal);font-weight:700">Patented facial age + body comp</td><td><span class="badge-no">N/A</span></td><td>MRI/CT add-on ($499+)</td><td><span class="badge-no">N/A</span></td></tr>
+          <tr><td>White-Label B2B API</td><td style="color:var(--teal);font-weight:700">Full enterprise white-label</td><td><span class="badge-no">Consumer only</span></td><td><span class="badge-no">Consumer only</span></td><td><span class="badge-part">Partial</span></td></tr>
+          <tr class="hl"><td>Pharmacogenomics (PGx)</td><td style="color:var(--teal);font-weight:700">193 PGx traits, CYP2D6/2C19</td><td><span class="badge-no">N/A</span></td><td><span class="badge-no">N/A</span></td><td><span class="badge-no">N/A</span></td></tr>
+          <tr><td>Specialized Vertical AI Engines</td><td style="color:var(--teal);font-weight:700">14 verticals, 249 domain indices</td><td>10 healthspan scores</td><td>Per-biomarker flags</td><td><span class="badge-no">None</span></td></tr>
+          <tr class="hl"><td>Overall Score</td><td><span class="badge-ln">A+</span></td><td><span class="badge-part">B</span></td><td><span class="badge-part">B</span></td><td><span class="badge-no">C</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="g3">
+      <div class="adv-card"><div class="adv-icon" style="background:#e8faf8;font-size:.9rem;font-weight:800;color:var(--teal)">01</div><div><div class="adv-title">5,168 Biomarkers vs. 160</div><div class="adv-desc">Deepest multi-omics dataset in the market. Closest competitor covers 3% of LifeNome's biomarker scope.</div></div></div>
+      <div class="adv-card"><div class="adv-icon" style="background:#fdf6e8;font-size:.9rem;font-weight:800;color:var(--gold)">02</div><div><div class="adv-title">$5/User Acquisition Cost</div><div class="adv-desc">B2B(2C) model drives user acquisition through enterprise partners. Competitors pay $100+/user direct.</div></div></div>
+      <div class="adv-card"><div class="adv-icon" style="background:#f3eefb;font-size:.9rem;font-weight:800;color:var(--violet)">03</div><div><div class="adv-title">80% EBITDA Margin at Scale</div><div class="adv-desc">Pure software licensing model. Near-zero COGS. Competitors carry high lab and fulfillment costs.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 8: TEAM ════════════════════════════════════════ -->
+<div class="page" id="page-8">
+  <div class="inner">
+    <div class="slide-eyebrow">Team</div>
+    <h1 class="slide-h1">World-Class <em>Scientists</em></h1>
+    <p class="slide-sub">Founding team of top-20 globally cited scholars, supported by 200K+ collective peer-reviewed citations across 10 scientific advisors.</p>
+    <div class="g3 mb2">
+      <div class="team-card"><div class="team-role">CEO &amp; Co-Founder</div><div class="team-name">Ali Mostashari, PhD</div><div class="team-bio">MIT PhD · Top 20 globally cited in Complexity Science · Research Affiliate Scholar, MIT · Advised Fortune 500s, WEF, ANR, and Newsweek on AI and healthcare · Oversaw $1.2B tech portfolio in Africa</div></div>
+      <div class="team-card"><div class="team-role">Chief Scientist</div><div class="team-name">Raya Khanin, PhD</div><div class="team-bio">Weizmann PhD · Top 10 globally cited in Computational Genomics · Faculty at Memorial Sloan Kettering · Dorothy Hodgkin Fellow (UK) · 50+ publications · 16K+ citations</div></div>
+      <div class="team-card"><div class="team-role">SVP Technology</div><div class="team-name">Mario Storga, PhD</div><div class="team-bio">University of Bath Postdoc · Top 20 globally cited in Semantic Networks · Professor at University of Zagreb · Chair of Design Society and MAE at FSB/UZ</div></div>
+    </div>
+    <div class="card mb2">
+      <div class="slide-h3 mb1">Scientific Advisory Board — 200K+ Collective Citations</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:.7rem">
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Keshav Singh, PhD</div><div style="font-size:.73rem;color:var(--slate)">Top cited longevity scholar · Mitochondrial DNA expert</div></div>
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Poroshat Shekarloo, MD</div><div style="font-size:.73rem;color:var(--slate)">Chief Medical Advisor · Director Peer Review, Maimonides</div></div>
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Nicole Avena, PhD</div><div style="font-size:.73rem;color:var(--slate)">Prof. of Neuroscience, Mount Sinai &amp; Princeton</div></div>
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Ana Maria Siega-Riz, PhD</div><div style="font-size:.73rem;color:var(--slate)">Dean, School of Public Health, UMass Amherst</div></div>
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Martin Gershon, MD, PhD</div><div style="font-size:.73rem;color:var(--slate)">Senior Advisor to Cancer Moonshot, White House</div></div>
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Sanaz Nosrat, PhD</div><div style="font-size:.73rem;color:var(--slate)">Prof. of Exercise Physiology, Columbia University</div></div>
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Delaram Kahrobaei, PhD</div><div style="font-size:.73rem;color:var(--slate)">Senior AI &amp; Quantum Computing · Prof. CUNY</div></div>
+        <div style="padding:.7rem;border-radius:9px;background:#f7fafd;border:1px solid var(--line)"><div style="font-weight:700;font-size:.83rem">Martin Tristani, MD, PhD</div><div style="font-size:.73rem;color:var(--slate)">Board Certified Cardiologist, Univ. of Minnesota</div></div>
+      </div>
+    </div>
+    <div class="card-soft" style="border:1px solid rgba(0,180,160,.2)">
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-around;text-align:center">
+        <div><div style="font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--teal)">200K+</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate)">Collective Citations</div></div>
+        <div><div style="font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--gold)">3</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate)">Top-20 Global Scholars</div></div>
+        <div><div style="font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--violet)">10</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate)">Scientific Advisors</div></div>
+        <div><div style="font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--green)">50+</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate)">Peer-Reviewed Publications</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 9: ROADMAP ══════════════════════════════════════ -->
+<div class="page" id="page-9">
+  <div class="inner">
+    <div class="slide-eyebrow">Exit Strategy</div>
+    <h1 class="slide-h1">18-Month <em>Acquisition Readiness</em></h1>
+    <p class="slide-sub">LifeNome is executing a deliberate 3-phase roadmap toward strategic acquisition. The $2.5M SAFE round funds the critical inflection phase.</p>
+    <div class="g3 mb2">
+      <div class="card" style="border-top:3px solid var(--teal)">
+        <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:.6rem">Phase 1 · Now – 6mo</div>
+        <div class="slide-h3">Foundation</div>
+        <div style="font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:1rem">YHealth platform build ($2.4M) · Pilot launch across 8 YMCA locations · ARR to $4M+ · IP documentation and patent portfolio</div>
+        <div class="tl-item"><div class="tl-dot" style="background:#e8faf8;color:var(--teal)">✓</div><div><div class="tl-title">YHealth YMCA Partnership Signed</div><div class="tl-desc">Deal structure finalized · Platform build commencing</div></div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:#e8faf8;color:var(--teal)">→</div><div><div class="tl-title">$2.5M SAFE Close</div><div class="tl-desc">Funds platform development, key hires, BD activation</div></div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:#e8faf8;color:var(--teal)">○</div><div><div class="tl-title">Recap Foods / FuelMeals Agreement</div><div class="tl-desc">Precision nutrition white-label deployment signed</div></div></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--gold)">
+        <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.6rem">Phase 2 · 6 – 12mo</div>
+        <div class="slide-h3">Scale</div>
+        <div style="font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:1rem">YHealth to 512 locations · 2+ white-label enterprise deals · ARR to $8M+ · Data licensing commercial agreements activated</div>
+        <div class="tl-item"><div class="tl-dot" style="background:#fdf6e8;color:var(--gold)">○</div><div><div class="tl-title">YMCA Deployment</div><div class="tl-desc">5K scans · 20% conversion · NPS &gt;50 · $1M+ pilot ARR — triggers national expansion</div></div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:#fdf6e8;color:var(--gold)">○</div><div><div class="tl-title">White-Label Pipeline</div><div class="tl-desc">Health systems + employer wellness + MedSpa chains · 2 signed LOIs</div></div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:#fdf6e8;color:var(--gold)">○</div><div><div class="tl-title">Series A Positioning</div><div class="tl-desc">Full fundraise at materially higher valuation based on live YHealth data</div></div></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--violet)">
+        <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--violet);margin-bottom:.6rem">Phase 3 · 12 – 18mo</div>
+        <div class="slide-h3">Acquisition Ready</div>
+        <div style="font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:1rem">$10M+ ARR · Full acquisition documentation · Strategic buyer engagement · National expansion underway</div>
+        <div class="tl-item"><div class="tl-dot" style="background:#f3eefb;color:var(--violet)">○</div><div><div class="tl-title">Syndesis Alignment</div><div class="tl-desc">Multi-omics IP integration with $3B+ Syndesis Health · joint pharma and insurance offerings</div></div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:#f3eefb;color:var(--violet)">○</div><div><div class="tl-title">YHealth Revenue Scaling</div><div class="tl-desc">Subscription + data licensing + white-label streams all active · compounding ARR</div></div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:#f3eefb;color:var(--violet)">○</div><div><div class="tl-title">National Rollout</div><div class="tl-desc">YHealth beyond pilot metros · acquisition documentation complete · strategic buyer engagement</div></div></div>
+      </div>
+    </div>
+    <div class="card-dark">
+      <div class="slide-h3" style="color:#fff;margin-bottom:1rem">Potential Acquirer Profile</div>
+      <div class="g4" style="gap:.8rem">
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:.9rem"><div style="font-weight:700;font-size:.83rem;color:var(--tl2);margin-bottom:.3rem">💊 Pharma / Biotech</div><div style="font-size:.75rem;color:rgba(255,255,255,.5)">Clinical trial optimization, PGx data moat, precision medicine pipeline</div></div>
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:.9rem"><div style="font-weight:700;font-size:.83rem;color:#e8a832;margin-bottom:.3rem">📊 Health Data</div><div style="font-size:.75rem;color:rgba(255,255,255,.5)">Multi-omics intelligence layer for existing patient data assets (Syndesis pathway)</div></div>
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:.9rem"><div style="font-weight:700;font-size:.83rem;color:var(--violet);margin-bottom:.3rem">🏋️ Wellness Platforms</div><div style="font-size:.75rem;color:rgba(255,255,255,.5)">Peloton, Hims, DTC wellness brands seeking precision science differentiation</div></div>
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:.9rem"><div style="font-weight:700;font-size:.83rem;color:#4ade80;margin-bottom:.3rem">🏥 Insurance / Payers</div><div style="font-size:.75rem;color:rgba(255,255,255,.5)">Risk stratification, prevention ROI, Medicare Advantage differentiation</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE 10: CLOSING ════════════════════════════════════ -->
+<div class="page" id="page-10">
+  <div class="inner" style="text-align:center;padding-top:3rem">
+    <div class="slide-eyebrow" style="display:block">The Ask</div>
+    <h1 class="slide-h1" style="font-size:3.8rem">Invest in the <em>Infrastructure</em><br>of Longevity</h1>
+    <p style="color:var(--slate);font-size:1.05rem;line-height:1.7;max-width:600px;margin:0 auto 2.5rem">LifeNome is not a health app. It's the intelligence layer that makes precision health possible at scale — already profitable, already global, and now positioned for a defining partnership that unlocks a multi-billion dollar revenue path.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);max-width:760px;margin:0 auto 2.5rem;gap:1.2rem">
+      <div class="val-card" style="text-align:center"><div class="val-yr">SAFE Raise</div><div class="val-num" style="font-size:2.8rem">$2.5M</div><div class="val-sub">At $47.5M post-money cap</div><div class="val-return" style="font-size:.75rem">20% discount</div></div>
+      <div class="val-card" style="text-align:center"><div class="val-yr">Current Traction</div><div class="val-num" style="font-size:2.8rem;color:#e8a832">$2M+</div><div class="val-sub">2025 Revenue · 90% ARR</div><div style="background:rgba(232,168,50,.12);border:1px solid rgba(232,168,50,.25);border-radius:8px;padding:.5rem .9rem;display:inline-block;margin-top:.8rem;font-size:.8rem;font-weight:700;color:#e8a832">40% EBITDA margin</div></div>
+      <div class="val-card" style="text-align:center"><div class="val-yr">2030 Realistic Exit</div><div class="val-num" style="font-size:2.8rem;color:#4ade80">$596M</div><div class="val-sub">At 12× revenue · $49.7M ARR</div><div style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);border-radius:8px;padding:.5rem .9rem;display:inline-block;margin-top:.8rem;font-size:.8rem;font-weight:700;color:#4ade80">~12.5× on SAFE entry</div></div>
+    </div>
+    <div style="max-width:540px;margin:0 auto 2rem">
+      <div class="card" style="border:2px solid var(--teal)"><div class="slide-h3 mb1">Contact</div><div style="font-size:.88rem;color:var(--slate)"><div style="margin-bottom:.4rem"><strong style="color:var(--ink)">Ali Mostashari, PhD</strong> — CEO, LifeNome Inc.</div><div style="margin-bottom:.4rem">📧 ali@lifenome.com</div><div>🌐 lifenome.com · platform@lifenome.com</div></div></div>
+    </div>
+    <div class="watermark">CONFIDENTIAL — For Qualified Investors Only · LifeNome Inc. © 2026 · All Rights Reserved</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div id="footnav">
+  <button class="fnav-btn" id="prevBtn" onclick="navigate(-1)" disabled>← Prev</button>
+  <div class="fnav-dots" id="fnDots"></div>
+  <button class="fnav-btn" id="nextBtn" onclick="navigate(1)">Next →</button>
+</div>
+
+<script>
+const PAGES = ['Cover','Investment','Market','Platform','Traction','YHealth','Financials','Competitive','Team','Roadmap','Closing'];
+let curPage = 0;
+
+function setPage(i) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  // Show chosen page — cover uses flex, others use block
+  const pg = document.getElementById('page-' + i);
+  pg.classList.add('active');
+  pg.style.display = (i === 0) ? 'flex' : 'block';
+
+  document.querySelectorAll('.ntab').forEach((t,idx) => t.classList.toggle('active', idx === i));
+  document.querySelectorAll('.fdot').forEach((d,idx) => d.classList.toggle('active', idx === i));
+  document.querySelectorAll('.hm-item').forEach((it,idx) => it.classList.toggle('mactive', idx === i));
+  document.getElementById('prevBtn').disabled = i === 0;
+  document.getElementById('nextBtn').disabled = i === PAGES.length - 1;
+  curPage = i;
+  window.scrollTo(0, 0);
+  closeHam();
+  if (i === 6) initCharts();
+}
+
+function navigate(dir) { setPage(Math.max(0, Math.min(PAGES.length - 1, curPage + dir))); }
+
+// Build nav tabs + hamburger menu + dots
+const navTabs = document.getElementById('navTabs');
+const hamMenu = document.getElementById('hamMenu');
+const fnDots  = document.getElementById('fnDots');
+PAGES.forEach((p, i) => {
+  // desktop tab
+  const b = document.createElement('button');
+  b.className = 'ntab' + (i === 0 ? ' active' : '');
+  b.textContent = p; b.onclick = () => setPage(i);
+  navTabs.appendChild(b);
+  // hamburger item
+  const item = document.createElement('div');
+  item.className = 'hm-item' + (i === 0 ? ' mactive' : '');
+  item.innerHTML = '<div class="hm-num">' + (i + 1) + '</div><span>' + p + '</span>';
+  item.onclick = () => setPage(i);
+  hamMenu.appendChild(item);
+  // bottom dot
+  const d = document.createElement('div');
+  d.className = 'fdot' + (i === 0 ? ' active' : '');
+  d.onclick = () => setPage(i);
+  fnDots.appendChild(d);
+});
+
+// Init display state — cover visible, rest hidden
+document.querySelectorAll('.page').forEach((p, i) => {
+  p.style.display = (i === 0) ? 'flex' : 'none';
+});
+
+// Hamburger toggle
+function toggleHam() {
+  const btn = document.getElementById('hamBtn');
+  const menu = document.getElementById('hamMenu');
+  const open = !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  btn.classList.toggle('open', open);
+}
+function closeHam() {
+  document.getElementById('hamMenu').classList.remove('open');
+  document.getElementById('hamBtn').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  const menu = document.getElementById('hamMenu');
+  const btn  = document.getElementById('hamBtn');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) closeHam();
+});
+
+// ── SCENARIO DATA ────────────────────────────────────────────────────────────
+const SCENARIOS = {
+  conservative: {
+    label:'Conservative Scenario',
+    desc:'YHealth reaches 1M members by 2030 · 7% basic / 2% premium conversion · 28% annual churn · 3 white-label partners at $2.5M ACV · $12/user data licensing',
+    color:'#c0344a',
+    revenue:[2.8,5.9,8.1,10.6,13.4],
+    streams2030:{sub:1.26,dl:2.06,wl:3.28,mkt:0.07,pmpm:0.04},
+  },
+  realistic: {
+    label:'Realistic Scenario',
+    desc:'YHealth reaches 2.5M members by 2030 · 9% basic / 3% premium conversion · 22% annual churn · 8 white-label partners at $4M ACV · $18/user data licensing',
+    color:'#00b4a0',
+    revenue:[2.8,9.9,20.7,34.3,49.7],
+    streams2030:{sub:5.62,dl:9.47,wl:14.0,mkt:0.47,pmpm:0.24},
+  },
+  optimistic: {
+    label:'Optimistic Scenario',
+    desc:'YHealth reaches 4.5M members by 2030 · 11% basic / 4% premium conversion · 18% annual churn · 14 white-label partners at $5.5M ACV · $22/user data licensing',
+    color:'#1a9a6a',
+    revenue:[2.8,19.6,49.6,85.9,127.8],
+    streams2030:{sub:16.87,dl:26.68,wl:33.69,mkt:1.98,pmpm:0.88},
+  }
+};
+
+let curScenario = 'realistic';
+let revenueChart, streamChart;
+
+function setScenario(s) {
+  curScenario = s;
+  ['cons','real','opt'].forEach(k => document.getElementById('sc-'+k).classList.remove('active'));
+  const map = {conservative:'cons',realistic:'real',optimistic:'opt'};
+  document.getElementById('sc-'+map[s]).classList.add('active');
+  const sc = SCENARIOS[s];
+  document.getElementById('scTitle').textContent = sc.label;
+  document.getElementById('scText').textContent  = sc.desc;
+  document.getElementById('scDesc').style.borderLeftColor = sc.color;
+  updateCharts(); updateYearCards();
+}
+
+function updateCharts() {
+  const sc = SCENARIOS[curScenario];
+  if (revenueChart) {
+    revenueChart.data.datasets[0].data = sc.revenue;
+    revenueChart.data.datasets[0].borderColor = sc.color;
+    revenueChart.data.datasets[0].backgroundColor = sc.color + '22';
+    revenueChart.data.datasets[0].pointBackgroundColor = sc.color;
+    revenueChart.update();
+  }
+  if (streamChart) {
+    const st = sc.streams2030;
+    streamChart.data.datasets[0].data = [+st.sub.toFixed(1),+st.dl.toFixed(1),+st.wl.toFixed(1),+st.mkt.toFixed(1),+st.pmpm.toFixed(1)];
+    streamChart.update();
+  }
+}
+
+function updateYearCards() {
+  const sc = SCENARIOS[curScenario];
+  document.getElementById('yearCards').innerHTML = [2026,2027,2028,2029,2030].map((yr,i) => `
+    <div class="card" style="text-align:center;padding:1rem">
+      <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);margin-bottom:.3rem">${yr}</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:${sc.color}">${sc.revenue[i]<10?sc.revenue[i].toFixed(1):Math.round(sc.revenue[i])}M</div>
+      <div style="font-size:.66rem;color:var(--slate);margin-top:.15rem">Revenue</div>
+      <div style="height:1px;background:var(--line);margin:.55rem 0"></div>
+      <div style="font-size:.84rem;font-weight:700;color:var(--ink)">${Math.round(sc.revenue[i]*12)}M</div>
+      <div style="font-size:.64rem;color:var(--slate)">12× Valuation</div>
+    </div>`).join('');
+}
+
+function initCharts() {
+  if (revenueChart) return;
+  const sc = SCENARIOS[curScenario];
+
+  revenueChart = new Chart(document.getElementById('revenueChart').getContext('2d'), {
+    type:'line',
+    data:{
+      labels:['2026','2027','2028','2029','2030'],
+      datasets:[
+        {label:'Selected ($M)',data:sc.revenue,borderColor:sc.color,backgroundColor:sc.color+'22',borderWidth:3,pointBackgroundColor:sc.color,pointRadius:5,fill:true,tension:0.4},
+        {label:'Conservative ($M)',data:SCENARIOS.conservative.revenue,borderColor:'#c0344a55',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0.4},
+        {label:'Optimistic ($M)',data:SCENARIOS.optimistic.revenue,borderColor:'#1a9a6a44',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,tension:0.4}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:ctx=>` $${ctx.raw}M`}}},
+      scales:{y:{beginAtZero:true,ticks:{callback:v=>'$'+v+'M',font:{size:11}},grid:{color:'rgba(0,0,0,.04)'}},x:{grid:{display:false}}}
+    }
+  });
+
+  streamChart = new Chart(document.getElementById('streamChart').getContext('2d'), {
+    type:'doughnut',
+    data:{
+      labels:['Subscriptions','Data Licensing','White-Label','Marketplace','PMPM'],
+      datasets:[{data:[+sc.streams2030.sub.toFixed(1),+sc.streams2030.dl.toFixed(1),+sc.streams2030.wl.toFixed(1),+sc.streams2030.mkt.toFixed(1),+sc.streams2030.pmpm.toFixed(1)],backgroundColor:['#00b4a0','#b8852a','#6d3fa0','#1a9a6a','#1a9abf'],borderWidth:2,borderColor:'#fff'}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:ctx=>` $${ctx.raw}M`}}}}
+  });
+
+  updateYearCards();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') navigate(1);
+  else if (e.key === 'ArrowLeft') navigate(-1);
+});
+</script>
+</body>
+</html>
